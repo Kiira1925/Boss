@@ -6,9 +6,14 @@
 
 int game_scene;
 
+//ハンドル宣言
 int title_handle;
 int game_handle;
 int result_handle;
+int sprite_handle;
+
+//構造体実体宣言
+MapData Map;
 
 //
 // 定義ここまで
@@ -21,9 +26,13 @@ int result_handle;
 // ゲーム開始前処理
 void AfterInit(void)
 {
-	title_handle = LoadGraph("Title.jpg");
-	game_handle = LoadGraph("Game.jpg");
-	result_handle = LoadGraph("Result.jpg");
+	//ハンドルへのロード
+	title_handle = LoadGraph("Data/Sprite/Title.jpg");
+	game_handle = LoadGraph("Data/Sprite/Game.jpg");
+	result_handle = LoadGraph("Data/Sprite/Result.jpg");
+	sprite_handle = LoadGraph("Data/Sprite/sprite.png");
+	//変数の初期化
+	Map = { 0,0 };
 	game_scene = Title;
 }
 
@@ -55,6 +64,7 @@ void UpdateGame(int GameTime)
 void GameDraw(int GameTime)
 {
 	DrawGraph(0, 0, game_handle, true);
+	drawMapChip(Map, sprite_handle);
 }
 
 // リザルト更新処理

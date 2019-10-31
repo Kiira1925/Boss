@@ -3,6 +3,7 @@
 // インクルード
 #include <windows.h>
 #include <DxLib.h>
+#include "map.h"
 
 // 定数定義
 #define STR_WINTTL				"DXLIB" // ウィンドウタイトル（任意に設定）
@@ -10,7 +11,7 @@
 #define STR_MSG_ASKFS			"フルスクリーンで起動しますか？"
 
 // 構造体定義
-enum TITLE_SCENE{Title,Game,Result};
+enum GAME_SCENE{Title,Game,Result};
 
 
 // 関数プロトタイプ宣言
