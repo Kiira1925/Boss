@@ -1,5 +1,6 @@
 #pragma once
 //インクルード
+#include "player.h"
 
 //定数定義
 #define CHIP_SIZE		(60)
@@ -17,3 +18,4 @@ struct MapData
 
 //プロトタイプ宣言
 void drawMapChip(MapData Map, int sprite_handle);
+void setPlayerCollWithChip(MapData Map, Character* Player);

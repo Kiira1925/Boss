@@ -4,6 +4,8 @@
 #include <windows.h>
 #include <DxLib.h>
 #include "map.h"
+#include "player.h"
+#include "system.h"
 
 // 定数定義
 #define STR_WINTTL				"DXLIB" // ウィンドウタイトル（任意に設定）

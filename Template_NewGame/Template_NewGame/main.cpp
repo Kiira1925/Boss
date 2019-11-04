@@ -12,8 +12,12 @@ int game_handle;
 int result_handle;
 int sprite_handle;
 
+//変数宣言
+int gravity;
+
 //構造体実体宣言
 MapData Map;
+Character Player;
 
 //
 // 定義ここまで
@@ -32,14 +36,19 @@ void AfterInit(void)
 	result_handle = LoadGraph("Data/Sprite/Result.jpg");
 	sprite_handle = LoadGraph("Data/Sprite/sprite.png");
 	//変数の初期化
-	Map = { 0,0 };
 	game_scene = Title;
+	gravity = 3;
+	//構造体の初期化
+	Map = { 0,0 };
+	Player = { 60, 892, 0, 0, 10, 0, true,false, true, None, 0, 0, 0};
+
+	SetFontSize(28);
 }
 
 // タイトル更新処理
 void UpdateTitle(int GameTime)
 {
-	if (CheckHitKey(KEY_INPUT_SPACE))
+	if (CheckHitKey(KEY_INPUT_T))
 	{
 		game_scene = Game;
 	}
@@ -58,6 +67,10 @@ void UpdateGame(int GameTime)
 	{
 		game_scene = Result;
 	}
+	movePlayer(&Player);
+	setPlayerCollWithChip(Map, &Player);
+	affectGravity(&Player, gravity);
+	exeJump(&Player, gravity);
 }
 
 // ゲーム描画処理
@@ -65,6 +78,8 @@ void GameDraw(int GameTime)
 {
 	DrawGraph(0, 0, game_handle, true);
 	drawMapChip(Map, sprite_handle);
+	drawPlayer(&Player, sprite_handle);
+	drawDebugString(Player, gravity);
 }
 
 // リザルト更新処理
