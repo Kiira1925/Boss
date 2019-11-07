@@ -3,6 +3,8 @@
 // インクルード
 #include <windows.h>
 #include <DxLib.h>
+#include "Boss.h"
+#include "Player.h"
 
 // 定数定義
 #define STR_WINTTL				"DXLIB" // ウィンドウタイトル（任意に設定）
