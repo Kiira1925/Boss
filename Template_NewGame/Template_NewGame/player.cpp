@@ -10,7 +10,14 @@ void drawPlayer(Character* Player,int sprite_handle)
 
 	if (Player->on_ground == false)
 	{
-		DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X, 316, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE);
+		if (Player->speed_y < 0)
+		{
+			DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X, 316, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE);
+		}
+		else
+		{
+			DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X + PLAYER_WIDTH, 316, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE);
+		}
 	}
 
 	Player->anime_frame_num = (Player->anime_timer % 30) / 10;
@@ -36,25 +43,29 @@ void movePlayer(Character* Player)
 	Player->y += Player->speed_y;
 }
 
-void exeJump(Character* Player,int gravity)
+void exeJump(Character* Player,int gravity,bool checkPressButton)
 {
-	if (CheckHitKey(KEY_INPUT_SPACE) && Player->on_ground == true && Player->jump_flag == false)
+	//通常ジャンプ
+	if (checkPressButton && Player->on_ground == true && Player->jump_flag == false)
 	{
 		Player->jump_flag = true;
 		Player->jump_pow = PLAYER_JUMP_POW_MAX;
 		Player->speed_y -= Player->jump_pow;
 	}
-	//Player->speed_y = (-Player->jump_pow) + gravity;
+	//空中ジャンプ
+	if (checkPressButton && Player->on_ground == false && Player->air_jump_flag == false)
+	{
+		Player->air_jump_flag = true;
+		Player->jump_pow = PLAYER_JUMP_POW_MAX;
+		Player->speed_y = 0;
+		Player->speed_y -= Player->jump_pow;
+	}
 
-	//if (Player->jump_pow >= 0)
-	//{
-	//	Player->jump_pow -= PLAYER_DECAY_JUMP_POW;
-	//}
-
-	if (Player->speed_y > 0 && Player->jump_flag == true)
+	if (Player->on_ground == true)
 	{
 		Player->jump_flag = false;
-		//Player->jump_pow = 0;
+		Player->air_jump_flag = false;
+		Player->jump_timer = 0;
 	}
 }
 

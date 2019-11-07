@@ -14,6 +14,7 @@ int sprite_handle;
 
 //変数宣言
 int gravity;
+int button_timer;
 
 //構造体実体宣言
 MapData Map;
@@ -40,7 +41,7 @@ void AfterInit(void)
 	gravity = 3;
 	//構造体の初期化
 	Map = { 0,0 };
-	Player = { 60, 892, 0, 0, 10, 0, true,false, true, None, 0, 0, 0};
+	Player = { 60, 892, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 
 	SetFontSize(28);
 }
@@ -63,6 +64,7 @@ void TitleDraw(int GameTime)
 // ゲーム更新処理
 void UpdateGame(int GameTime)
 {
+	TimeController();
 	if (CheckHitKey(KEY_INPUT_RETURN))
 	{
 		game_scene = Result;
@@ -70,7 +72,7 @@ void UpdateGame(int GameTime)
 	movePlayer(&Player);
 	setPlayerCollWithChip(Map, &Player);
 	affectGravity(&Player, gravity);
-	exeJump(&Player, gravity);
+	exeJump(&Player, gravity, checkPressButton(&button_timer));
 }
 
 // ゲーム描画処理
@@ -79,7 +81,7 @@ void GameDraw(int GameTime)
 	DrawGraph(0, 0, game_handle, true);
 	drawMapChip(Map, sprite_handle);
 	drawPlayer(&Player, sprite_handle);
-	drawDebugString(Player, gravity);
+	drawDebugString(Player, gravity,button_timer);
 }
 
 // リザルト更新処理

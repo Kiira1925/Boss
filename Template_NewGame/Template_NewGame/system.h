@@ -3,4 +3,6 @@
 #include "player.h"
 
 //プロトタイプ宣言
-void drawDebugString(Character Player, int gravity);
+void drawDebugString(Character Player, int gravity, int button_timer);
+void TimeController();
+bool checkPressButton(int* button_timer);

@@ -27,6 +27,8 @@ struct Character
 	int jump_pow;
 	bool on_ground;
 	bool jump_flag;
+	bool air_jump_flag;
+	int jump_timer;
 
 	bool hit_able;
 	int attack_state;
@@ -40,5 +42,5 @@ struct Character
 //プロトタイプ宣言
 void drawPlayer(Character* Player, int sprite_handle);
 void movePlayer(Character* Player);
-void exeJump(Character* Player, int gravity);
+void exeJump(Character* Player, int gravity,bool checkPressButton);
 void affectGravity(Character* Player, int gravity);
