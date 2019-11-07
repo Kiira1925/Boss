@@ -1,12 +1,16 @@
 #include "main.h"
 
+
 //////////////////////////////////////////////////////////////////////////
 //	各ゲームで使用するクラスインスタンスやグローバル変数はここに記述
 //
 
-int game_scene;
 
+<<<<<<< HEAD
 //ハンドル宣言
+=======
+int game_scene;
+>>>>>>> ruka_develop
 int title_handle;
 int game_handle;
 int result_handle;
@@ -20,6 +24,10 @@ int button_timer;
 MapData Map;
 Character Player;
 
+int gravity;
+Character2 Boss;
+Character Player;
+//MapData Map;
 //
 // 定義ここまで
 //////////////////////////////////////////////////////////////////////////
@@ -28,9 +36,13 @@ Character Player;
 //	ここからゲームの処理
 //
 
+
+
+
 // ゲーム開始前処理
 void AfterInit(void)
 {
+<<<<<<< HEAD
 	//ハンドルへのロード
 	title_handle = LoadGraph("Data/Sprite/Title.jpg");
 	game_handle = LoadGraph("Data/Sprite/Game.jpg");
@@ -44,6 +56,14 @@ void AfterInit(void)
 	Player = { 60, 892, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 
 	SetFontSize(28);
+=======
+    title_handle = LoadGraph("Title.jpg");
+	game_handle = LoadGraph("Game.jpg");
+	result_handle = LoadGraph("Result.jpg");
+	game_scene = Title;
+    Player = { 60, 892, 0, 0, 10, 0, true,false, true, None, 0, 0, 0 };
+    Boss= { 60, 892, 0, 0, 10, 0, true,false, true, None, 0, 0, 0 };
+>>>>>>> ruka_develop
 }
 
 // タイトル更新処理
@@ -53,16 +73,18 @@ void UpdateTitle(int GameTime)
 	{
 		game_scene = Game;
 	}
+
 }
 
 // タイトル描画処理
 void TitleDraw(int GameTime)
 {
-	DrawGraph(0, 0, title_handle, true);
+    DrawRectGraph(0, 0, 0, 0, 192, 192, title_handle, true);
 }
 
 // ゲーム更新処理
 void UpdateGame(int GameTime)
+<<<<<<< HEAD
 {
 	TimeController();
 	if (CheckHitKey(KEY_INPUT_RETURN))
@@ -73,15 +95,31 @@ void UpdateGame(int GameTime)
 	setPlayerCollWithChip(Map, &Player);
 	affectGravity(&Player, gravity);
 	exeJump(&Player, gravity, checkPressButton(&button_timer));
+=======
+{	if (CheckHitKey(KEY_INPUT_RETURN))
+	{
+		game_scene = Result;
+	}
+movePlayer(&Player);
+moveBoss(&Boss);
+//setPlayerCollWithChip(Map, &Player);
+affectGravity(&Player, gravity);
+exeJump(&Player, gravity);
+>>>>>>> ruka_develop
 }
 
 // ゲーム描画処理
 void GameDraw(int GameTime)
 {
+<<<<<<< HEAD
 	DrawGraph(0, 0, game_handle, true);
 	drawMapChip(Map, sprite_handle);
 	drawPlayer(&Player, sprite_handle);
 	drawDebugString(Player, gravity,button_timer);
+=======
+    DrawRectGraph(0, 0, 0, 0, 192, 192, game_handle, true);
+    drawBoss(&Boss,boss_handle);
+>>>>>>> ruka_develop
 }
 
 // リザルト更新処理
@@ -93,7 +131,8 @@ void UpdateResult(int GameTime)
 // リザルト描画処理
 void ResultDraw(int GameTime)
 {
-	DrawGraph(0, 0, result_handle, true);
+    DrawRectGraph(0, 0, 0, 0, 192, 192, result_handle, true);
+
 }
 
 // ゲーム終了処理
@@ -155,12 +194,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
 	BeforeInit();						// DirectX初期化前処理
 	if (DxLib_Init() == -1) return -1;	// エラーが起きたら直ちに終了
-
 	SetGraphMode(1920, 1080, 32);		// 画面解像度を1920x1080,32bitカラーに設定
 	SetDrawScreen(DX_SCREEN_BACK);		// 描画スクリーンを裏側に指定
 	SetWaitVSyncFlag(TRUE);				// VSYNCを有効にする
 	AfterInit();						// DirectX初期化後処理
-	MainLoop();							// ゲーム本体(メインループ)
+	MainLoop();							// ゲーム本体(メインループ) 
 	DxLib_End();						// ＤＸライブラリ使用の終了処理
 	return 0;							// ソフトの終了
 }
+

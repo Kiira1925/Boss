@@ -3,9 +3,14 @@
 // インクルード
 #include <windows.h>
 #include <DxLib.h>
+<<<<<<< HEAD
 #include "map.h"
 #include "player.h"
 #include "system.h"
+=======
+#include "Boss.h"
+#include "Player.h"
+>>>>>>> ruka_develop
 
 // 定数定義
 #define STR_WINTTL				"DXLIB" // ウィンドウタイトル（任意に設定）

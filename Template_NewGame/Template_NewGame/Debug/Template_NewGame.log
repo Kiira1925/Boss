@@ -1,3 +1,43 @@
+<<<<<<< HEAD
 ﻿  map.cpp
   Template_NewGame.vcxproj -> C:\Users\2190028\Documents\Boss\Template_NewGame\Debug\Template_NewGame.exe
   Template_NewGame.vcxproj -> C:\Users\2190028\Documents\Boss\Template_NewGame\Debug\Template_NewGame.pdb (Partial PDB)
+=======
+﻿  main.cpp
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(16): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(16): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(16): error C2062: 型 'int' は不要です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): error C2182: 'moveBoss': 'void' 型が不適切に使用されています。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\main.cpp(63): error C2064: 1 引数を取り込む関数には評価されません。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\main.cpp(73): error C2065: 'boss_handle': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\main.cpp(73): error C3861: 'drawBoss': 識別子が見つかりませんでした
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\main.cpp(119): warning C4551: 関数呼び出しに引数リストがありません。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\main.cpp(124): warning C4551: 関数呼び出しに引数リストがありません。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\main.cpp(129): warning C4551: 関数呼び出しに引数リストがありません。
+  Boss.cpp
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(16): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(16): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(16): error C2062: 型 'int' は不要です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): error C2182: 'moveBoss': 'void' 型が不適切に使用されています。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(18): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(18): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(18): error C2062: 型 'int' は不要です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(19): error C2143: 構文エラー: ';' が '{' の前にありません。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(19): error C2447: '{': 対応する関数ヘッダーがありません (旧形式の仮引数リスト?)
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(26): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(26): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(26): error C2182: 'moveBoss': 'void' 型が不適切に使用されています。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(26): error C2374: 'moveBoss': 再定義されています。2 回以上初期化されています。
+  c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.h(17): note: 'moveBoss' の宣言を確認してください
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(27): error C2448: 'moveBoss': 関数の定義が間違っています。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(45): error C2065: 'Character': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(45): error C2065: 'Boss': 定義されていない識別子です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(45): error C2062: 型 'int' は不要です。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(46): error C2143: 構文エラー: ';' が '{' の前にありません。
+c:\users\2190232\desktop\vsboss\template_newgame\template_newgame\boss.cpp(46): error C2447: '{': 対応する関数ヘッダーがありません (旧形式の仮引数リスト?)
+  コードを生成中...
+>>>>>>> ruka_develop

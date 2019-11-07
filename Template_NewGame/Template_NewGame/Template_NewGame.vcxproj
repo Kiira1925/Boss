@@ -131,16 +131,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="main.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="system.cpp" />
+=======
+    <ClCompile Include="Player.cpp" />
+>>>>>>> ruka_develop
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="main.h" />
+<<<<<<< HEAD
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="system.h" />
+=======
+    <ClInclude Include="Player.h" />
+>>>>>>> ruka_develop
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
