@@ -1,11 +1,26 @@
 #include <DxLib.h>
 #include "player.h"
 
-void drawPlayer(Character* Player,int sprite_handle)
+void drawPlayer(Character* Player, int sprite_handle)
 {
 	if (Player->attack_state == None && Player->on_ground == true)
 	{
-		DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X+(PLAYER_WIDTH*Player->anime_frame_num), PLAYER_SRC_Y, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE);
+		if (Player->speed_x == 0)
+		{
+			Player->anime_frame_num = (Player->anime_timer % 40) / 10;
+			if (Player->direction == Right) { DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X + (PLAYER_WIDTH*Player->anime_frame_num), PLAYER_SRC_Y, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->direction == Left) { DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X + (PLAYER_WIDTH*Player->anime_frame_num), PLAYER_SRC_Y, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+		}
+		if (Player->speed_x > 0)
+		{
+			Player->anime_frame_num = (Player->anime_timer % 30) / 10;
+			DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X + (PLAYER_WIDTH*Player->anime_frame_num), PLAYER_SRC_Y+128, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE);
+		}
+		if (Player->speed_x < 0)
+		{
+			Player->anime_frame_num = (Player->anime_timer % 30) / 10;
+			DrawRectGraph(Player->x, Player->y, PLAYER_SRC_X + (PLAYER_WIDTH*Player->anime_frame_num), PLAYER_SRC_Y + 128, PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE);
+		}
 	}
 
 	if (Player->on_ground == false)
@@ -20,7 +35,6 @@ void drawPlayer(Character* Player,int sprite_handle)
 		}
 	}
 
-	Player->anime_frame_num = (Player->anime_timer % 30) / 10;
 	Player->anime_timer++;
 }
 
@@ -31,10 +45,12 @@ void movePlayer(Character* Player)
 	if (CheckHitKey(KEY_INPUT_RIGHT))
 	{
 		Player->speed_x = PLAYER_SPEED_MAX;
+		Player->direction = Right;
 	}
 	if (CheckHitKey(KEY_INPUT_LEFT))
 	{
 		Player->speed_x = -PLAYER_SPEED_MAX;
+		Player->direction = Left;
 	}
 
 	if (Player->speed_x > 50) { Player->speed_x = 50; }
@@ -43,7 +59,7 @@ void movePlayer(Character* Player)
 	Player->y += Player->speed_y;
 }
 
-void exeJump(Character* Player,int gravity,bool checkPressButton)
+void exeJump(Character* Player, int gravity, bool checkPressButton)
 {
 	//’ÊíƒWƒƒƒ“ƒv
 	if (checkPressButton && Player->on_ground == true && Player->jump_flag == false)

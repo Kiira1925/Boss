@@ -33,3 +33,9 @@ bool checkPressButton(int* button_timer)
 	if ((*button_timer) == 1) { return true; }
 	else { return false; }
 }
+
+void drawCollisionBox(Character Player)
+{
+	int color = GetColor(255, 0, 153);
+	DrawBox(Player.x, Player.x + PLAYER_WIDTH, Player.y, Player.y + PLAYER_HEIGHT, color, FALSE);
+}

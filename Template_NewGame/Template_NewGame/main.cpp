@@ -38,10 +38,10 @@ void AfterInit(void)
 	sprite_handle = LoadGraph("Data/Sprite/sprite.png");
 	//変数の初期化
 	game_scene = Title;
-	gravity = 3;
+	gravity = 2;
 	//構造体の初期化
 	Map = { 0,0 };
-	Player = { 60, 892, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
+	Player = { 60, 892, Right, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 
 	SetFontSize(28);
 }
@@ -81,7 +81,7 @@ void GameDraw(int GameTime)
 	DrawGraph(0, 0, game_handle, true);
 	drawMapChip(Map, sprite_handle);
 	drawPlayer(&Player, sprite_handle);
-	drawDebugString(Player, gravity,button_timer);
+	drawDebugString(Player, gravity, button_timer);
 }
 
 // リザルト更新処理

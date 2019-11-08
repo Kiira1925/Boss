@@ -94,7 +94,7 @@ void setPlayerCollWithChip(MapData Map, Character* Player)
 								//判定のあったチップの下方向にチップが存在しなければ処理を行う
 								if (map_data[Ver + 1][Hor] == 0)
 								{
-									Player->y = chip_bottom;
+									Player->y = chip_bottom - PLAYER_COLL_TOP;
 									Player->speed_y = 0;
 								}
 							}
@@ -125,7 +125,7 @@ void setPlayerCollWithChip(MapData Map, Character* Player)
 							//判定のあったチップの右方向にチップが存在しなければ処理を行う
 							if (map_data[Ver][Hor + 1] == 0)
 							{
-								Player->x = chip_right;
+								Player->x = chip_right - PLAYER_COLL_LEFT;
 							}
 						}
 					}

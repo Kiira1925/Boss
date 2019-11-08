@@ -6,21 +6,23 @@
 #define PLAYER_HEIGHT			(128)
 #define PLAYER_SRC_X			(0)
 #define PLAYER_SRC_Y			(60)
-#define PLAYER_COLL_LEFT		(0)
-#define PLAYER_COLL_RIGHT		(128)
-#define PLAYER_COLL_TOP			(0)
+#define PLAYER_COLL_LEFT		(0+35)
+#define PLAYER_COLL_RIGHT		(128-35)
+#define PLAYER_COLL_TOP			(0+15)
 #define PLAYER_COLL_BOTTOM		(128)
 #define PLAYER_SPEED_MAX		(15)
-#define PLAYER_JUMP_POW_MAX		(50)
+#define PLAYER_JUMP_POW_MAX		(35)
 #define PLAYER_DECAY_JUMP_POW	(2)
 
 
 //ç\ë¢ëÃíËã`
 enum ATTACK_STATE {None, GrAttack1,GrAttack2,GrAttack3};
+enum PLAYER_DIRECTION { Left, Right };
 
 struct Character
 {
 	int x, y;
+	bool direction;
 	int speed_x, speed_y;
 	int HP;
 
