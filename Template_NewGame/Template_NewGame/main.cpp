@@ -11,6 +11,7 @@ int title_handle;
 int game_handle;
 int result_handle;
 int sprite_handle;
+int gate_handle;
 
 //変数宣言
 int gravity;
@@ -36,12 +37,13 @@ void AfterInit(void)
 	game_handle = LoadGraph("Data/Sprite/Game.jpg");
 	result_handle = LoadGraph("Data/Sprite/Result.jpg");
 	sprite_handle = LoadGraph("Data/Sprite/sprite.png");
+	gate_handle = LoadGraph("Data/Sprite/gate.png");
 	//変数の初期化
 	game_scene = Title;
 	gravity = 2;
 	//構造体の初期化
 	Map = { 0,0 };
-	Player = { 60, 892, Right, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
+	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 
 	SetFontSize(28);
 }
@@ -73,6 +75,8 @@ void UpdateGame(int GameTime)
 	setPlayerCollWithChip(Map, &Player);
 	affectGravity(&Player, gravity);
 	exeJump(&Player, gravity, checkPressButton(&button_timer));
+	moveMapChip(&Map);
+	scrollMapChip(&Map, &Player);
 }
 
 // ゲーム描画処理
@@ -81,7 +85,8 @@ void GameDraw(int GameTime)
 	DrawGraph(0, 0, game_handle, true);
 	drawMapChip(Map, sprite_handle);
 	drawPlayer(&Player, sprite_handle);
-	drawDebugString(Player, gravity, button_timer);
+	drawDebugString(Player, gravity, button_timer,Map);
+	drawGate(gate_handle);
 }
 
 // リザルト更新処理
