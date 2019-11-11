@@ -86,7 +86,7 @@ void GameDraw(int GameTime)
 	drawMapChip(Map, sprite_handle);
 	drawPlayer(&Player, sprite_handle);
 	drawDebugString(Player, gravity, button_timer,Map);
-	drawGate(gate_handle);
+	//drawGate(gate_handle);
 }
 
 // リザルト更新処理
