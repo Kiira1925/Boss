@@ -1,9 +1,10 @@
-#include "main.h"
+#include"main.h"
+#include"system.h"
+
 
 //////////////////////////////////////////////////////////////////////////
 //	各ゲームで使用するクラスインスタンスやグローバル変数はここに記述
 //
-
 int game_scene;
 
 //ハンドル宣言
@@ -12,14 +13,25 @@ int game_handle;
 int result_handle;
 int sprite_handle;
 int gate_handle;
+int dammy_handle;
 
 //変数宣言
 int gravity;
-int button_timer;
+int jump_button_timer;
+int attack_button_timer;
+int scene;
+int shake_timer;
+int shake_power;
+bool shake_screen;
+bool now_performance;
 
 //構造体実体宣言
 MapData Map;
 Character Player;
+SceneFlag Scene;
+ScareCrow Dammy;
+XINPUT_STATE X_Input;
+
 
 //
 // 定義ここまで
@@ -38,12 +50,21 @@ void AfterInit(void)
 	result_handle = LoadGraph("Data/Sprite/Result.jpg");
 	sprite_handle = LoadGraph("Data/Sprite/sprite.png");
 	gate_handle = LoadGraph("Data/Sprite/gate.png");
+	dammy_handle = LoadGraph("Data/Sprite/dammy.png");
+
 	//変数の初期化
 	game_scene = Title;
 	gravity = 2;
+	jump_button_timer = 0;
+	attack_button_timer = 0;
+	scene = Tutorial;
+	now_performance = false;
+
 	//構造体の初期化
-	Map = { 0,0 };
-	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
+	Map = { 0, 0, ABS_FIRST_BATTLE_LINE };
+	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0, 0 };
+	Dammy = { 500,912,20000 };
+	Scene = { false, false, false, false, false, false, 0 };
 
 	SetFontSize(28);
 }
@@ -66,26 +87,36 @@ void TitleDraw(int GameTime)
 // ゲーム更新処理
 void UpdateGame(int GameTime)
 {
+	GetJoypadXInputState(DX_INPUT_PAD1, &X_Input);
 	TimeController();
 	if (CheckHitKey(KEY_INPUT_RETURN))
 	{
 		game_scene = Result;
 	}
-	movePlayer(&Player);
+	movePlayer(&Player, now_performance, X_Input);
 	setPlayerCollWithChip(Map, &Player);
 	affectGravity(&Player, gravity);
-	exeJump(&Player, gravity, checkPressButton(&button_timer));
+	exeJump(&Player, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
+	attackPlayer(&Player, checkPressAttack(&attack_button_timer, now_performance), now_performance);
+	collPlayerAttack(Player, Dammy, &shake_screen, Map);
 	moveMapChip(&Map);
-	scrollMapChip(&Map, &Player);
+	scrollMapChip(&Map, &Player, scene);
+	changeStateFlag(&Scene, Map, Player, &scene, &now_performance);
+	StateTransition(&scene, Scene);
+	performanceScroll(&Map, &Player, &Scene, scene);
+	shakeScreen(&shake_screen, &shake_power, &shake_timer, &Player, &Map, &Dammy);
 }
 
 // ゲーム描画処理
 void GameDraw(int GameTime)
 {
 	DrawGraph(0, 0, game_handle, true);
-	drawMapChip(Map, sprite_handle);
-	drawPlayer(&Player, sprite_handle);
-	drawDebugString(Player, gravity, button_timer,Map);
+	drawMapChip(Map, sprite_handle, shake_power);
+	drawPlayer(&Player, sprite_handle, shake_power);
+	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power, shake_screen, scene);
+	drawCollisionBox(Player, Dammy,Map);
+	drawBattleStartLine(Map);
+	drawScareCrow(Dammy, Map, dammy_handle, shake_power);
 	//drawGate(gate_handle);
 }
 
@@ -98,7 +129,7 @@ void UpdateResult(int GameTime)
 // リザルト描画処理
 void ResultDraw(int GameTime)
 {
-	DrawGraph(0, 0, result_handle, true);
+
 }
 
 // ゲーム終了処理

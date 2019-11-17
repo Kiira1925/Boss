@@ -1,33 +1,13 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <Dxlib.h>
-#include "map.h"
+#include"system.h"
+#include"main.h"
+
+
 
 //--マップチップ割当内容--
 //	0	:	空白(透明色)
 //	1	:	地面
 //	2	:	壁
-
-//int map_data[18][32]
-//{
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2},
-//	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-//};
 
 int map_data[18][256] =
 {
@@ -74,13 +54,13 @@ void loadMap()
 	fclose(fp);
 }
 
-void drawMapChip(MapData Map, int sprite_handle)
+void drawMapChip(MapData Map, int sprite_handle,int shake_power)
 {
 	for (int Ver = 0; Ver < CHIP_MAX_Y; Ver++)
 	{
 		for (int Hor = 0 + MAP_MOVE_AMOUNT; Hor < CHIP_MAX_X + MAP_MOVE_AMOUNT + 1; Hor++)
 		{
-			DrawRectGraph((Map.draw_position_x + (CHIP_SIZE*Hor)), (Map.draw_position_y + (CHIP_SIZE*Ver)),
+			DrawRectGraph((Map.draw_position_x + (CHIP_SIZE*Hor)+shake_power), (Map.draw_position_y + (CHIP_SIZE*Ver)-shake_power),
 				CHIP_SRC_X + (CHIP_SIZE * map_data[Ver][Hor]), CHIP_SRC_Y, CHIP_SIZE, CHIP_SIZE, sprite_handle, true);
 		}
 	}
@@ -221,7 +201,7 @@ void moveMapChip(MapData* Map)
 	}
 }
 
-void scrollMapChip(MapData* Map, Character* Player)
+void scrollMapChip(MapData* Map, Character* Player, int scene)
 {
 	int scroll_dest_pos;
 	int scroll_speed;
@@ -237,47 +217,37 @@ void scrollMapChip(MapData* Map, Character* Player)
 		scroll_speed = ((float)(scroll_dest_pos - Player->x + (PLAYER_WIDTH / 2)) / 1000) * 30;
 	}
 
-	//左にスクロールする場合
-	if (Player->x + (PLAYER_WIDTH / 2) > scroll_dest_pos)
+	if (scene != 1 && scene != 3 && scene != 5)
 	{
-		if (Map->draw_position_x != BG_DEST_LIMIT_LEFT) {
-			Player->x -= scroll_speed;
-			Map->draw_position_x -= scroll_speed;
+		//左にスクロールする場合
+		if (Player->x + (PLAYER_WIDTH / 2) > scroll_dest_pos)
+		{
+			if (Map->draw_position_x != BG_DEST_LIMIT_LEFT) {
+				Player->x -= scroll_speed;
+				Map->draw_position_x -= scroll_speed;
+			}
 		}
-		//if ((Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) > 500) { Player->x -= 15, Map->draw_position_x -= 15; }
-		//if ((Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) > 350 && scroll_dest_pos - (Player->x + (PLAYER_WIDTH / 2)) <= 500) { Player->x -= 10, Map->draw_position_x -= 10; }
-		//if ((Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) > 0 && scroll_dest_pos - (Player->x + (PLAYER_WIDTH / 2)) <= 250) { Player->x -= 5, Map->draw_position_x -= 5; }
+
+		//右にスクロールする場合
+		if (Player->x + (PLAYER_WIDTH / 2) < scroll_dest_pos)
+		{
+			if (Map->draw_position_x != BG_DEST_LIMIT_RIGHT) {
+				Player->x += scroll_speed;
+				Map->draw_position_x += scroll_speed;
+			}
+		}
 	}
 
-	//右にスクロールする場合
-	if (Player->x + (PLAYER_WIDTH / 2) < scroll_dest_pos)
-	{
-		if (Map->draw_position_x != BG_DEST_LIMIT_RIGHT) {
-			Player->x += scroll_speed;
-			Map->draw_position_x += scroll_speed;
-		}
-		//if ((Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) > 500) { Player->x -= 15, Map->draw_position_x -= 15; }
-		//if ((Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) > 350 && scroll_dest_pos - (Player->x + (PLAYER_WIDTH / 2)) <= 500) { Player->x -= 10, Map->draw_position_x -= 10; }
-		//if ((Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) > 0 && scroll_dest_pos - (Player->x + (PLAYER_WIDTH / 2)) <= 250) { Player->x -= 5, Map->draw_position_x -= 5; }
-	}
-
-	////右方向
-	//if (Player->x < MOVEABLE_RANGE_LEFT && Map->draw_position_x < BG_DEST_LIMIT_RIGHT)
-	//{
-	//	Player->x = MOVEABLE_RANGE_LEFT;
-	//	Map->draw_position_x -= Player->speed_x;
-	//}
+	////右方向スクロール限界地点処理
 	if (Map->draw_position_x > BG_DEST_LIMIT_RIGHT) { Map->draw_position_x = BG_DEST_LIMIT_RIGHT; }
 	if (Player->x < 0) { Player->x = 0; }
 
-	////左方向
-	//if (Player->x + PLAYER_WIDTH > MOVEABLE_RANGE_RIGHT && Map->draw_position_x > BG_DEST_LIMIT_LEFT)
-	//{
-	//	Player->x = MOVEABLE_RANGE_RIGHT - PLAYER_WIDTH;
-	//	Map->draw_position_x -= Player->speed_x;
-	//}
+	////左方向スクロール限界地点処理
 	if (Map->draw_position_x < BG_DEST_LIMIT_LEFT) { Map->draw_position_x = BG_DEST_LIMIT_LEFT; }
 	if (Player->x + PLAYER_WIDTH>1920) { Player->x = 1920 - PLAYER_WIDTH; }
+
+	//第一ボス戦判定ライン座標更新
+	Map->first_battle_line = ABS_FIRST_BATTLE_LINE + Map->draw_position_x;
 }
 
 void drawGate(int gate_handle)
