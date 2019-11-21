@@ -9,7 +9,7 @@
 #define STR_MSG_ASKFS			"フルスクリーンで起動しますか？"
 
 // 構造体定義
-enum GAME_SCENE { Title, Game, Result };
+enum GAME_SCENE { Title, Game, Result, GameOver };
 
 
 // 関数プロトタイプ宣言

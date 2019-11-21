@@ -2,6 +2,7 @@
 //インクルード
 #include"DxLib.h"
 #include"scarecrow.h"
+
 //定数定義
 #define PLAYER_WIDTH				(128)
 #define PLAYER_HEIGHT				(128)
@@ -17,11 +18,13 @@
 #define PLAYER_ATTACK1_COLL_LEFT	(75)
 #define PLAYER_ATTACK1_COLL_RIGHT	(130)
 #define PLAYER_ATTACK1_COLL_TOP		(60)
-#define PLAYER_ATTACK1_COLL_BOTTOM	(80)
+#define PLAYER_ATTACK1_COLL_BOTTOM	(90)
+#define JUMP_EFFECT_WIDTH			(256)
+#define JUMP_EFFECT_HEIGHT			(256)
 
 
 //構造体定義
-enum ATTACK_STATE {None, GrAttack1,GrAttack2,GrAttack3};
+enum ATTACK_STATE {None, BackStep, GrAttack1,GrAttack2,GrAttack3};
 enum PLAYER_DIRECTION { Left, Right };
 
 struct Character
@@ -36,23 +39,47 @@ struct Character
 	bool jump_flag;
 	bool air_jump_flag;
 	int jump_timer;
+	bool jump_effect_flag;
+	int jump_effect_timer;
+	int jump_effect_posX, jump_effect_posY;
 
 	bool hit_able;
 	int attack_state;
+	bool stepable;
 
 	int anime_timer;
 	int damage_timer;
 	int attack_timer;
+	int step_timer;
 
 	int anime_frame_num;
+};
+
+struct HitState
+{
+	bool hit_GrAttack1;
+	bool hit_GrAttack2_1;
+	bool hit_GrAttack2_2;
+	bool hit_GrAttack3;
+
+	bool hit_Air_Attack;
+};
+
+struct AfterImage
+{
+	int x[20];
+	int y[20];
 };
 
 //プロトタイプ宣言
 //struct ScareCrow;
 //struct Character;
-void drawPlayer(Character* Player, int sprite_handle, int shake_power);
+void drawPlayer(Character* Player, int sprite_handle, int shake_power_x, int shake_power_y);
 void movePlayer(Character* Player, bool now_performance, XINPUT_STATE X_input);
-void exeJump(Character* Player, int gravity,bool checkPressButton);
+void exeJump(Character* Player, MapData Map, int gravity,bool checkPressButton);
 void affectGravity(Character* Player, int gravity);
-void attackPlayer(Character* Player, bool checkPressAttack, bool now_performance);
-void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, MapData Map);
+void attackPlayer(Character* Player, bool checkPressAttack, bool checkPressStep, bool now_performance);
+void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, MapData Map,HitState* Attack);
+void savePlayerPos(Character Player, AfterImage* AfterPlayer);
+void drawAfterImages(Character Player, AfterImage AfterPlayer, int shake_power_x, int shake_power_y, int sprite_handle);
+void drawEffect(Character Player, int sprite_handle,MapData Map);

@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include"system.h"
-#include"main.h"
+#include "system.h"
+#include "main.h"
+#include "boss.h"
 
 
 
@@ -54,13 +55,13 @@ void loadMap()
 	fclose(fp);
 }
 
-void drawMapChip(MapData Map, int sprite_handle,int shake_power)
+void drawMapChip(MapData Map, int sprite_handle, int shake_power_x, int shake_power_y)
 {
 	for (int Ver = 0; Ver < CHIP_MAX_Y; Ver++)
 	{
 		for (int Hor = 0 + MAP_MOVE_AMOUNT; Hor < CHIP_MAX_X + MAP_MOVE_AMOUNT + 1; Hor++)
 		{
-			DrawRectGraph((Map.draw_position_x + (CHIP_SIZE*Hor)+shake_power), (Map.draw_position_y + (CHIP_SIZE*Ver)-shake_power),
+			DrawRectGraph((Map.draw_position_x + (CHIP_SIZE*Hor) + shake_power_x), (Map.draw_position_y + (CHIP_SIZE*Ver) - shake_power_y),
 				CHIP_SRC_X + (CHIP_SIZE * map_data[Ver][Hor]), CHIP_SRC_Y, CHIP_SIZE, CHIP_SIZE, sprite_handle, true);
 		}
 	}
@@ -172,6 +173,111 @@ void setPlayerCollWithChip(MapData Map, Character* Player)
 	}
 }
 
+void setBossCollWithChip(MapData Map, Enemy* Boss)
+{
+	Boss->on_ground = false;
+	//チップ当たり判定処理
+	for (int Ver = 0; Ver < CHIP_MAX_Y; Ver++)
+	{
+		for (int Hor = 0 + MAP_MOVE_AMOUNT; Hor < CHIP_MAX_X + MAP_MOVE_AMOUNT + 1; Hor++)
+		{
+			int chip_left;
+			int chip_right;
+			int chip_top;
+			int chip_bottom;
+			int boss_coll_left;
+			int boss_coll_right;
+			int boss_coll_top;
+			int boss_coll_bottom;
+
+			if (map_data[Ver][Hor] > 0)
+			{
+				//マップチップ4点座標
+				chip_left = Hor*CHIP_SIZE + Map.draw_position_x;
+				chip_right = (Hor + 1)*CHIP_SIZE + Map.draw_position_x;
+				chip_top = Ver*CHIP_SIZE + Map.draw_position_y;
+				chip_bottom = (Ver + 1)*CHIP_SIZE + Map.draw_position_y;
+				//ボス当たり判定部4点座標
+				boss_coll_left = Boss->x + BOSS_COLL_LEFT;
+				boss_coll_right = Boss->x + BOSS_COLL_RIGHT;
+				boss_coll_top = Boss->y + BOSS_COLL_TOP;
+				boss_coll_bottom = Boss->y + BOSS_COLL_BOTTOM;
+
+				if (boss_coll_left < chip_right && boss_coll_right > chip_left && boss_coll_top < chip_bottom && boss_coll_bottom > chip_top)
+				{
+					//縦方向の押し戻し
+					if (Boss->speed_y != 0)
+					{
+						if (Boss->speed_y > 0)
+						{
+							if (boss_coll_left < chip_right && boss_coll_right > chip_left && boss_coll_top + 180 < chip_bottom && boss_coll_bottom > chip_top)
+							{
+								//判定のあったチップの上方向にチップが存在しなければ処理を行う
+								if (map_data[Ver - 1][Hor] == 0)
+								{
+									Boss->y = chip_top - BOSS_COLL_BOTTOM;
+								}
+							}
+						}
+						if (Boss->speed_y < 0)
+						{
+							if (boss_coll_left < chip_right && boss_coll_right > chip_left && boss_coll_top < chip_bottom && boss_coll_bottom - 180 > chip_top)
+							{
+								//判定のあったチップの下方向にチップが存在しなければ処理を行う
+								if (map_data[Ver + 1][Hor] == 0)
+								{
+									Boss->y = chip_bottom;
+									Boss->speed_y = 0;
+								}
+							}
+						}
+					}
+				}
+				//押し戻し後のプレイヤー座標を再取得
+				boss_coll_left = Boss->x + BOSS_COLL_LEFT;
+				boss_coll_right = Boss->x + BOSS_COLL_RIGHT;
+				boss_coll_top = Boss->y + BOSS_COLL_TOP;
+				boss_coll_bottom = Boss->y + BOSS_COLL_BOTTOM;
+
+				if (boss_coll_left < chip_right && boss_coll_right > chip_left && boss_coll_top < chip_bottom && boss_coll_bottom > chip_top)
+				{
+					//横方向の押し戻し処理
+					if (Boss->speed_x != 0)
+					{
+						if (Boss->speed_x > 0)
+						{
+							//判定のあったチップの左方向にチップが存在しなければ処理を行う
+							if (map_data[Ver][Hor - 1] == 0)
+							{
+								Boss->x = chip_left - BOSS_COLL_RIGHT;
+							}
+						}
+						if (Boss->speed_x < 0)
+						{
+							//判定のあったチップの右方向にチップが存在しなければ処理を行う
+							if (map_data[Ver][Hor + 1] == 0)
+							{
+								Boss->x = chip_right;
+							}
+						}
+					}
+				}
+				//押し戻し後のプレイヤー座標を再取得
+				boss_coll_left = Boss->x + BOSS_COLL_LEFT;
+				boss_coll_right = Boss->x + BOSS_COLL_RIGHT;
+				boss_coll_top = Boss->y + BOSS_COLL_TOP;
+				boss_coll_bottom = Boss->y + BOSS_COLL_BOTTOM;
+
+				//接地判定
+				if (boss_coll_bottom == chip_top && boss_coll_right > chip_left && boss_coll_left < chip_right)
+				{
+					Boss->on_ground = true;
+				}
+			}
+		}
+	}
+}
+
 //キー入力によるマップチップのスクロール	※デバッグ用なのでマスターでは実装しない
 void moveMapChip(MapData* Map)
 {
@@ -201,7 +307,7 @@ void moveMapChip(MapData* Map)
 	}
 }
 
-void scrollMapChip(MapData* Map, Character* Player, int scene)
+void scrollMapChip(MapData* Map, Character* Player, Enemy* Boss, int scene)
 {
 	int scroll_dest_pos;
 	int scroll_speed;
@@ -209,21 +315,28 @@ void scrollMapChip(MapData* Map, Character* Player, int scene)
 	if (Player->direction == Right)
 	{
 		scroll_dest_pos = 400;
-		scroll_speed = ((float)(Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) / 1000) * 30;
+		if (Player->x + (PLAYER_WIDTH / 2) > scroll_dest_pos) { scroll_speed = ((float)(Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) / 1000) * 30; }
+		if (Player->x + (PLAYER_WIDTH / 2) < scroll_dest_pos) { scroll_speed = ((float)(scroll_dest_pos - Player->x + (PLAYER_WIDTH / 2)) / 1000) * 30; }
 	}
 	if (Player->direction == Left)
 	{
 		scroll_dest_pos = 1520;
-		scroll_speed = ((float)(scroll_dest_pos - Player->x + (PLAYER_WIDTH / 2)) / 1000) * 30;
+		if (Player->x + (PLAYER_WIDTH / 2) < scroll_dest_pos) { scroll_speed = ((float)(scroll_dest_pos - Player->x + (PLAYER_WIDTH / 2)) / 1000) * 30; }
+		if (Player->x + (PLAYER_WIDTH / 2) > scroll_dest_pos) { scroll_speed = ((float)(Player->x + (PLAYER_WIDTH / 2) - scroll_dest_pos) / 1000) * 30; }
 	}
 
 	if (scene != 1 && scene != 3 && scene != 5)
 	{
+		//if (Player->attack_state == BackStep)
+		//{
+		//	Map->draw_position_x -= Player->speed_x;
+		//}
 		//左にスクロールする場合
 		if (Player->x + (PLAYER_WIDTH / 2) > scroll_dest_pos)
 		{
 			if (Map->draw_position_x != BG_DEST_LIMIT_LEFT) {
 				Player->x -= scroll_speed;
+				Boss->x -= scroll_speed;
 				Map->draw_position_x -= scroll_speed;
 			}
 		}
@@ -233,6 +346,7 @@ void scrollMapChip(MapData* Map, Character* Player, int scene)
 		{
 			if (Map->draw_position_x != BG_DEST_LIMIT_RIGHT) {
 				Player->x += scroll_speed;
+				Boss->x += scroll_speed;
 				Map->draw_position_x += scroll_speed;
 			}
 		}
@@ -248,19 +362,4 @@ void scrollMapChip(MapData* Map, Character* Player, int scene)
 
 	//第一ボス戦判定ライン座標更新
 	Map->first_battle_line = ABS_FIRST_BATTLE_LINE + Map->draw_position_x;
-}
-
-void drawGate(int gate_handle)
-{
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	SetDrawBright(255, 255, 255);
-	DrawGraph(0, 0, gate_handle, TRUE);
-	SetDrawBright(0, 255, 0);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-	DrawGraph(0, 0, gate_handle, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 200);
-	DrawGraph(0, 0, gate_handle, TRUE);
-	DrawGraph(0, 0, gate_handle, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-	SetDrawBright(255, 255, 255);
 }

@@ -16,4 +16,4 @@ struct ScareCrow
 
 //プロトタイプ宣言
 struct MapData;
-void drawScareCrow(ScareCrow dammy, MapData map, int dammy_handle,int shake_power);
+void drawScareCrow(ScareCrow dammy, MapData map, int dammy_handle,int shake_power_x,int shake_power_y);

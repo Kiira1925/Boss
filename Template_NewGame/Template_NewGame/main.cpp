@@ -1,5 +1,7 @@
-#include"main.h"
-#include"system.h"
+#include "main.h"
+#include "system.h"
+#include "gameover.h"
+#include "boss.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -13,21 +15,31 @@ int game_handle;
 int result_handle;
 int sprite_handle;
 int gate_handle;
+int boss_handle;
 int dammy_handle;
+int bb_handle;
 
 //変数宣言
 int gravity;
 int jump_button_timer;
 int attack_button_timer;
+int step_button_timer;
 int scene;
 int shake_timer;
-int shake_power;
+int shake_power_x;
+int shake_power_y;
 bool shake_screen;
 bool now_performance;
+int gate_y;
+int gate_speed;
+int bb_transparency;
 
 //構造体実体宣言
 MapData Map;
 Character Player;
+Enemy Boss;
+HitState Attack;
+AfterImage AfterPlayer;
 SceneFlag Scene;
 ScareCrow Dammy;
 XINPUT_STATE X_Input;
@@ -49,20 +61,26 @@ void AfterInit(void)
 	game_handle = LoadGraph("Data/Sprite/Game.jpg");
 	result_handle = LoadGraph("Data/Sprite/Result.jpg");
 	sprite_handle = LoadGraph("Data/Sprite/sprite.png");
+	boss_handle = LoadGraph("Data/Sprite/boss.png");
 	gate_handle = LoadGraph("Data/Sprite/gate.png");
 	dammy_handle = LoadGraph("Data/Sprite/dammy.png");
+	bb_handle = LoadGraph("Data/Sprite/BlackBack.png");
 
 	//変数の初期化
 	game_scene = Title;
 	gravity = 2;
 	jump_button_timer = 0;
 	attack_button_timer = 0;
+	step_button_timer = 0;
 	scene = Tutorial;
 	now_performance = false;
+	gate_y = -420;
 
 	//構造体の初期化
 	Map = { 0, 0, ABS_FIRST_BATTLE_LINE };
-	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0, 0 };
+	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0,false, 0,0,0, true, None,true, 0, 0, 0, 0, 0 };
+	AfterPlayer = { 0,0 };
+	Boss = { 3600, 708, 0,0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 	Dammy = { 500,912,20000 };
 	Scene = { false, false, false, false, false, false, 0 };
 
@@ -93,31 +111,44 @@ void UpdateGame(int GameTime)
 	{
 		game_scene = Result;
 	}
+	if (CheckHitKey(KEY_INPUT_END))
+	{
+		game_scene = GameOver;
+	}
 	movePlayer(&Player, now_performance, X_Input);
+	moveBoss(Player, &Boss);
 	setPlayerCollWithChip(Map, &Player);
+	setBossCollWithChip(Map, &Boss);
 	affectGravity(&Player, gravity);
-	exeJump(&Player, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
-	attackPlayer(&Player, checkPressAttack(&attack_button_timer, now_performance), now_performance);
-	collPlayerAttack(Player, Dammy, &shake_screen, Map);
-	moveMapChip(&Map);
-	scrollMapChip(&Map, &Player, scene);
+	affectGravity(&Boss, gravity);
+	exeJump(&Player, Map, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
+	exeJump(&Boss, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
+	attackPlayer(&Player, checkPressAttack(&attack_button_timer, now_performance), checkPressStep(&step_button_timer, now_performance), now_performance);
+	collPlayerAttack(Player, Dammy, &shake_screen, Map, &Attack);
+	//moveMapChip(&Map);
+	scrollMapChip(&Map, &Player, &Boss, scene);
 	changeStateFlag(&Scene, Map, Player, &scene, &now_performance);
 	StateTransition(&scene, Scene);
-	performanceScroll(&Map, &Player, &Scene, scene);
-	shakeScreen(&shake_screen, &shake_power, &shake_timer, &Player, &Map, &Dammy);
+	performanceScroll(&Map, &Player, &Boss, &Scene, scene);
+	shakeScreen(&shake_screen, &shake_power_x, &shake_power_y, &shake_timer, &Player, &Map, &Dammy);
+	savePlayerPos(Player, &AfterPlayer);
+	dropGate(&gate_y, Scene, gravity, &gate_speed, &shake_screen);
 }
 
 // ゲーム描画処理
 void GameDraw(int GameTime)
 {
-	DrawGraph(0, 0, game_handle, true);
-	drawMapChip(Map, sprite_handle, shake_power);
-	drawPlayer(&Player, sprite_handle, shake_power);
-	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power, shake_screen, scene);
-	drawCollisionBox(Player, Dammy,Map);
+	DrawGraph(0 + shake_power_x, 0 + shake_power_y, game_handle, true);
+	drawAfterImages(Player, AfterPlayer, shake_power_x, shake_power_y, sprite_handle);
+	drawMapChip(Map, sprite_handle, shake_power_x, shake_power_y);
+	drawPlayer(&Player, sprite_handle, shake_power_x, shake_power_y);
+	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss);
+	drawCollisionBox(Player, Dammy, Map);
 	drawBattleStartLine(Map);
-	drawScareCrow(Dammy, Map, dammy_handle, shake_power);
-	//drawGate(gate_handle);
+	drawScareCrow(Dammy, Map, dammy_handle, shake_power_x, shake_power_y);
+	drawEffect(Player, sprite_handle, Map);
+	drawGate(gate_handle, gate_y, shake_power_x, shake_power_y);
+	drawBoss(&Boss, boss_handle, shake_power_x, shake_power_y);
 }
 
 // リザルト更新処理
@@ -130,6 +161,26 @@ void UpdateResult(int GameTime)
 void ResultDraw(int GameTime)
 {
 
+}
+
+// リザルト更新処理
+void UpdateGameOver(int GameTime)
+{
+
+}
+
+// リザルト描画処理
+void GameOverDraw(int GameTime)
+{
+	DrawGraph(0 + shake_power_x, 0 + shake_power_y, game_handle, true);
+	drawAfterImages(Player, AfterPlayer, shake_power_x, shake_power_y, sprite_handle);
+	drawMapChip(Map, sprite_handle, shake_power_x, shake_power_y);
+	drawPlayer(&Player, sprite_handle, shake_power_x, shake_power_y);
+	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss);
+	drawBattleStartLine(Map);
+	drawScareCrow(Dammy, Map, dammy_handle, shake_power_x, shake_power_y);
+	drawEffect(Player, sprite_handle, Map);
+	drawBB(bb_handle, &bb_transparency);
 }
 
 // ゲーム終了処理
@@ -174,6 +225,11 @@ void MainLoop(void)
 			UpdateResult(gameTime);			// リザルト更新処理
 			ClearDrawScreen;				// 裏画面を削除
 			ResultDraw(gameTime);			// リザルト描画処理
+			break;
+		case GameOver:
+			UpdateGameOver(gameTime);		// ゲームオーバー更新処理
+			ClearDrawScreen;				// 裏画面を削除
+			GameOverDraw(gameTime);			// ゲームオーバー描画処理
 			break;
 		}
 

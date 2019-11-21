@@ -19,6 +19,7 @@
 #define BG_SCROLL_SPEED				(10)
 #define ABS_FIRST_BATTLE_LINE		(2160)
 #define ABS_FIRST_BATTLE_PLAYER_POS	(2349)
+#define GATE_HEIGHT					(420)
 
 //構造体定義
 struct MapData
@@ -29,9 +30,10 @@ struct MapData
 };
 
 //プロトタイプ宣言
-void drawMapChip(MapData Map, int sprite_handle,int shake_power);
+struct Enemy;
+void drawMapChip(MapData Map, int sprite_handle,int shake_power_x, int shake_power_y);
 void setPlayerCollWithChip(MapData Map, Character* Player);
+void setBossCollWithChip(MapData Map, Enemy* Boss);
 void loadMap();
 void moveMapChip(MapData* Map);
-void scrollMapChip(MapData* Map, Character* Player,int scene);
-void drawGate(int gate_handle);
+void scrollMapChip(MapData* Map, Character* Player, Enemy* Boss, int scene);
