@@ -13,6 +13,7 @@ void TimeController();
 bool checkPressButton(int* space_button_timer, bool now_performance, XINPUT_STATE X_Input);
 bool checkPressAttack(int* attack_button_timer, bool now_performance);
 bool checkPressStep(int* step_button_timer, bool now_performance);
+bool checkPressShot(int* shot_button_timer, bool now_performance);
 void drawCollisionBox(Character Player, ScareCrow Dammy,MapData Map);
 void drawBattleStartLine(MapData Map);
 void shakeScreen(bool* shake_screen, int* shake_power_x, int* shake_power_y, int* shake_timer, Character* Player, MapData* Map, ScareCrow* Dammy);

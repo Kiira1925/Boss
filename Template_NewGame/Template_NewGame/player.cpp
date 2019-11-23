@@ -4,6 +4,7 @@
 //
 #include "system.h"
 #include "main.h"
+#include "shot.h"
 
 void drawPlayer(Character* Player, int sprite_handle, int shake_power_x, int shake_power_y)
 {
@@ -66,6 +67,22 @@ void drawPlayer(Character* Player, int sprite_handle, int shake_power_x, int sha
 		{
 			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
 			else { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 3, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+		}
+	}
+
+	if (Player->attack_state == Shot)
+	{
+		if (Player->direction == Right)
+		{
+			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 0, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer>=10 && Player->attack_timer < 15) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 15) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+		}
+		if (Player->direction == Left)
+		{
+			if (Player->attack_timer < 5) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 0, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 5 && Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE,TRUE); }
+			if (Player->attack_timer >= 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
 		}
 	}
 
@@ -176,8 +193,9 @@ void affectGravity(Character* Player, int gravity)
 	}
 }
 
-void attackPlayer(Character* Player, bool checkPressAttack, bool checkPressStep, bool now_performance)
+void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool checkPressAttack, bool checkPressStep, bool checkPressShot, bool now_performance)
 {
+	//‘Ò‹@ó‘Ô‚©‚çUŒ‚ˆê’i–Ú‚É”h¶
 	if (Player->attack_state == None && Player->on_ground && checkPressAttack)
 	{
 		Player->attack_timer = 0;
@@ -185,6 +203,15 @@ void attackPlayer(Character* Player, bool checkPressAttack, bool checkPressStep,
 		if (Player->direction == Right) { Player->speed_x = 20; }
 		if (Player->direction == Left) { Player->speed_x = -20; }
 	}
+
+	//‘Ò‹@ó‘Ô‚©‚ç‰“‹——£UŒ‚‚É”h¶
+	if (Player->attack_state == None && checkPressShot)
+	{
+		Player->attack_timer = 0;
+		Player->attack_state = Shot;
+		if (Player->on_ground == true) { Player->speed_x = 0; }
+	}
+
 	//////////	UŒ‚ˆê’i–Ú	//////////
 	if (Player->attack_state == GrAttack1)
 	{
@@ -192,7 +219,7 @@ void attackPlayer(Character* Player, bool checkPressAttack, bool checkPressStep,
 		if (Player->speed_x < 0) { Player->speed_x += 2; }
 		Player->x += Player->speed_x;
 		Player->attack_timer++;
-		if (Player->attack_timer > 15)
+		if (Player->attack_timer > 20)
 		{
 			Player->attack_state = None;
 			Player->attack_timer = 0;
@@ -216,7 +243,7 @@ void attackPlayer(Character* Player, bool checkPressAttack, bool checkPressStep,
 			Player->attack_timer = 0;
 			if (Player->direction == Right) { Player->speed_x = -20; }
 			if (Player->direction == Left)	{ Player->speed_x = 20; }
-			Player->speed_y = -20;
+			Player->speed_y = -30;
 		}
 	}
 
@@ -226,6 +253,42 @@ void attackPlayer(Character* Player, bool checkPressAttack, bool checkPressStep,
 		if (Player->speed_x > 0) { Player->speed_x -= 2; }
 		if (Player->speed_x < 0) { Player->speed_x += 2; }
 		//Player->x += Player->speed_x;
+		Player->attack_timer++;
+		if (Player->attack_timer > 20)
+		{
+			Player->attack_state = None;
+			Player->attack_timer = 0;
+		}
+	}
+
+	//////////	‰“‹——£UŒ‚	//////////
+	if (Player->attack_state == Shot)
+	{
+		if (Player->attack_timer == 15)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (!shot_fin && !(PlayerShot + i)->exist)
+				{
+					(PlayerShot + i)->exist = true;
+					if (Player->direction == Right)
+					{
+						(PlayerShot + i)->x = Player->x;
+						(PlayerShot + i)->direction = Right;
+						(PlayerShot + i)->speed_x = 30;
+					}
+					if (Player->direction == Left)
+					{
+						(PlayerShot + i)->x = Player->x;
+						(PlayerShot + i)->direction = Left;
+						(PlayerShot + i)->speed_x = -30;
+					}
+					//if (Player->direction == Left) { (PlayerShot + i)->x = Player->x + 110; }
+					(PlayerShot + i)->y = Player->y;
+					shot_fin = true;
+				}
+			}
+		}
 		Player->attack_timer++;
 		if (Player->attack_timer > 20)
 		{
@@ -291,7 +354,7 @@ void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, Map
 				!Attack->hit_GrAttack1 && *shake_screen == false)
 			{
 				*shake_screen = true;
-				Attack->hit_GrAttack1;
+				Attack->hit_GrAttack1 = true;
 			}
 		}
 	}
@@ -300,6 +363,23 @@ void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, Map
 	if (Player.attack_state != GrAttack1) { Attack->hit_GrAttack1 = false; }
 	if (Player.attack_state != GrAttack2) { Attack->hit_GrAttack2_1 = false, Attack->hit_GrAttack2_2 = false; }
 	if (Player.attack_state != GrAttack3) { Attack->hit_GrAttack3 = false; }
+}
+
+void collPlayerShot(Character Player, ScareCrow Dammy, bool* shake_screen, MapData Map, Bullet PlayerShot[5], HitState* Attack)
+{
+	if (Player.attack_state == Shot)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			if (PlayerShot[i].coll_right > Dammy.x + Map.draw_position_x && PlayerShot[i].coll_left < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+				PlayerShot[i].coll_top < Dammy.y + DAMMY_HEIGHT && PlayerShot[i].coll_bottom >Dammy.y &&
+				PlayerShot[i].exist && *shake_screen == false)
+			{
+				*shake_screen = true;
+				Attack->hit_Shot = true;
+			}
+		}
+	}
 }
 
 void savePlayerPos(Character Player, AfterImage* AfterPlayer)

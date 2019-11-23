@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bg.cpp" />
     <ClCompile Include="boss.cpp" />
     <ClCompile Include="gameover.cpp" />
     <ClCompile Include="scarecrow.cpp" />
@@ -138,9 +139,11 @@
     <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scene.cpp" />
+    <ClCompile Include="shot.cpp" />
     <ClCompile Include="system.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bg.h" />
     <ClInclude Include="boss.h" />
     <ClInclude Include="gameover.h" />
     <ClInclude Include="main.h" />
@@ -148,6 +151,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="scarecrow.h" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="shot.h" />
     <ClInclude Include="system.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

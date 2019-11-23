@@ -84,6 +84,15 @@ bool checkPressStep(int* step_button_timer, bool now_performance)
 	else { return false; }
 }
 
+bool checkPressShot(int* shot_button_timer, bool now_performance)
+{
+	if (CheckHitKey(KEY_INPUT_Q) && !now_performance) { (*shot_button_timer)++; }
+	else { (*shot_button_timer) = 0; }
+
+	if ((*shot_button_timer) == 1) { return true; }
+	else { return false; }
+}
+
 void drawCollisionBox(Character Player, ScareCrow Dammy, MapData Map)
 {
 	int color = GetColor(255, 0, 153);
@@ -128,9 +137,9 @@ void shakeScreen(bool* shake_screen, int* shake_power_x, int* shake_power_y, int
 		if (Player->direction == Left)
 		{
 			*shake_power_x = *shake_power_y = 0;
-			if (*shake_timer % 5 < 3) { *shake_power_x = 10; }
-			if (*shake_timer % 5 >= 3) { *shake_power_y = 10; }
-			if (*shake_timer > 10) { *shake_screen = false; }
+			if (*shake_timer % 5 < 3) { *shake_power_x = 20; }
+			if (*shake_timer % 5 >= 3) { *shake_power_y = 20; }
+			if (*shake_timer > 6) { *shake_screen = false; }
 		}
 		(*shake_timer)++;
 	}

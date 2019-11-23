@@ -1,13 +1,17 @@
+#include <math.h>
 #include "main.h"
 #include "system.h"
 #include "gameover.h"
 #include "boss.h"
+#include "shot.h"
+#include "bg.h"
 
 
 //////////////////////////////////////////////////////////////////////////
 //	各ゲームで使用するクラスインスタンスやグローバル変数はここに記述
 //
 int game_scene;
+float fsin[360], fcos[360];
 
 //ハンドル宣言
 int title_handle;
@@ -18,12 +22,17 @@ int gate_handle;
 int boss_handle;
 int dammy_handle;
 int bb_handle;
+int bullet_handle;
+int bg_handle;
+int bg2_handle;
 
 //変数宣言
 int gravity;
 int jump_button_timer;
 int attack_button_timer;
 int step_button_timer;
+int shot_button_timer;
+bool shot_fin;
 int scene;
 int shake_timer;
 int shake_power_x;
@@ -37,11 +46,13 @@ int bb_transparency;
 //構造体実体宣言
 MapData Map;
 Character Player;
+Bullet PlayerShot[5];
 Enemy Boss;
 HitState Attack;
 AfterImage AfterPlayer;
 SceneFlag Scene;
 ScareCrow Dammy;
+BackGround BG;
 XINPUT_STATE X_Input;
 
 
@@ -65,13 +76,23 @@ void AfterInit(void)
 	gate_handle = LoadGraph("Data/Sprite/gate.png");
 	dammy_handle = LoadGraph("Data/Sprite/dammy.png");
 	bb_handle = LoadGraph("Data/Sprite/BlackBack.png");
+	bullet_handle = LoadGraph("Data/Sprite/talisman.png");
+	bg_handle = LoadGraph("Data/Sprite/back.png");
+	bg2_handle = LoadGraph("Data/Sprite/back_2.png");
 
 	//変数の初期化
+	for (int i = 0; i<360; i++)
+	{
+		fsin[i] = (float)sin(i*3.1415926535 / 180);
+		fcos[i] = (float)cos(i*3.1415926535 / 180);
+	}
 	game_scene = Title;
 	gravity = 2;
 	jump_button_timer = 0;
 	attack_button_timer = 0;
 	step_button_timer = 0;
+	shot_button_timer = 0;
+	shot_fin = false;
 	scene = Tutorial;
 	now_performance = false;
 	gate_y = -420;
@@ -79,6 +100,11 @@ void AfterInit(void)
 	//構造体の初期化
 	Map = { 0, 0, ABS_FIRST_BATTLE_LINE };
 	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0,false, 0,0,0, true, None,true, 0, 0, 0, 0, 0 };
+	for (int i = 0; i < 5; i++)
+	{
+		PlayerShot[i] = { -500,-500,0,0,0,0,0,0,0,0,Right,0,false,0,0 };
+	}
+	BG = { 0,0,1920,0,0,0,0,0,0 };
 	AfterPlayer = { 0,0 };
 	Boss = { 3600, 708, 0,0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 	Dammy = { 500,912,20000 };
@@ -117,16 +143,20 @@ void UpdateGame(int GameTime)
 	}
 	movePlayer(&Player, now_performance, X_Input);
 	moveBoss(Player, &Boss);
+	calTalisman(&PlayerShot[0]);
 	setPlayerCollWithChip(Map, &Player);
 	setBossCollWithChip(Map, &Boss);
+	setTalismanCollWithChip(Map, &PlayerShot[0]);
 	affectGravity(&Player, gravity);
 	affectGravity(&Boss, gravity);
 	exeJump(&Player, Map, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
 	exeJump(&Boss, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
-	attackPlayer(&Player, checkPressAttack(&attack_button_timer, now_performance), checkPressStep(&step_button_timer, now_performance), now_performance);
+	attackPlayer(&Player, &PlayerShot[0], shot_fin, checkPressAttack(&attack_button_timer, now_performance), checkPressStep(&step_button_timer, now_performance), checkPressShot(&shot_button_timer, now_performance), now_performance);
 	collPlayerAttack(Player, Dammy, &shake_screen, Map, &Attack);
 	//moveMapChip(&Map);
-	scrollMapChip(&Map, &Player, &Boss, scene);
+	scrollMapChip(&Map, &Player, &Boss,&BG, scene);
+	scrollBG(&BG);
+	scrollTree(&BG, Map);
 	changeStateFlag(&Scene, Map, Player, &scene, &now_performance);
 	StateTransition(&scene, Scene);
 	performanceScroll(&Map, &Player, &Boss, &Scene, scene);
@@ -139,12 +169,14 @@ void UpdateGame(int GameTime)
 void GameDraw(int GameTime)
 {
 	DrawGraph(0 + shake_power_x, 0 + shake_power_y, game_handle, true);
+	drawBG(bg_handle,bg2_handle,Map,BG);
 	drawAfterImages(Player, AfterPlayer, shake_power_x, shake_power_y, sprite_handle);
 	drawMapChip(Map, sprite_handle, shake_power_x, shake_power_y);
 	drawPlayer(&Player, sprite_handle, shake_power_x, shake_power_y);
-	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss);
+	//drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss);
 	drawCollisionBox(Player, Dammy, Map);
 	drawBattleStartLine(Map);
+	drawTalisman(PlayerShot, bullet_handle);
 	drawScareCrow(Dammy, Map, dammy_handle, shake_power_x, shake_power_y);
 	drawEffect(Player, sprite_handle, Map);
 	drawGate(gate_handle, gate_y, shake_power_x, shake_power_y);

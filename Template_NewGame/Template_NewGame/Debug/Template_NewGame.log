@@ -1,9 +1,7 @@
-﻿  boss.cpp
-  コードを生成中...
-  スキップ中... (関連する変更は検出されませんでした)
-  system.cpp
-  scene.cpp
-  map.cpp
-  main.cpp
+﻿  main.cpp
+c:\users\2190028\documents\boss\template_newgame\template_newgame\main.cpp(248): warning C4551: 関数呼び出しに引数リストがありません。
+c:\users\2190028\documents\boss\template_newgame\template_newgame\main.cpp(253): warning C4551: 関数呼び出しに引数リストがありません。
+c:\users\2190028\documents\boss\template_newgame\template_newgame\main.cpp(258): warning C4551: 関数呼び出しに引数リストがありません。
+c:\users\2190028\documents\boss\template_newgame\template_newgame\main.cpp(263): warning C4551: 関数呼び出しに引数リストがありません。
   Template_NewGame.vcxproj -> C:\Users\2190028\Documents\Boss\Template_NewGame\Debug\Template_NewGame.exe
   Template_NewGame.vcxproj -> C:\Users\2190028\Documents\Boss\Template_NewGame\Debug\Template_NewGame.pdb (Partial PDB)

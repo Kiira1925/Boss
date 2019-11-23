@@ -31,9 +31,11 @@ struct MapData
 
 //プロトタイプ宣言
 struct Enemy;
+struct BackGround;
 void drawMapChip(MapData Map, int sprite_handle,int shake_power_x, int shake_power_y);
 void setPlayerCollWithChip(MapData Map, Character* Player);
 void setBossCollWithChip(MapData Map, Enemy* Boss);
+void setTalismanCollWithChip(MapData Map, Bullet* PlayerShot);
 void loadMap();
 void moveMapChip(MapData* Map);
-void scrollMapChip(MapData* Map, Character* Player, Enemy* Boss, int scene);
+void scrollMapChip(MapData* Map, Character* Player, Enemy* Boss, BackGround* BG, int scene);
