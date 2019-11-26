@@ -60,13 +60,47 @@ void drawPlayer(Character* Player, int sprite_handle, int shake_power_x, int sha
 	{
 		if (Player->direction == Right)
 		{
-			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
-			else { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 3, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer < 5) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 5 && Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 3, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 4, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
 		}
 		if (Player->direction == Left)
 		{
-			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
-			else { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 3, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer < 5) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 5 && Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 3, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 4, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+		}
+	}
+
+	if (Player->attack_state == GrAttack3)
+	{
+		if (Player->direction == Right)
+		{
+			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 6, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 10 && Player->attack_timer < 15) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 7, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 15) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 8, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+		}
+		if (Player->direction == Left)
+		{
+			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 6, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 10 && Player->attack_timer < 15) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 7, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 15) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 8, (PLAYER_SRC_Y + PLAYER_HEIGHT * 3), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+		}
+	}
+
+	if (Player->attack_state == AirAttack)
+	{
+		if (Player->direction == Right)
+		{
+			if (Player->attack_timer < 5) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 0, (PLAYER_SRC_Y + PLAYER_HEIGHT * 5), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 5 && Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 5), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 5), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+		}
+		if (Player->direction == Left)
+		{
+			if (Player->attack_timer < 5) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 0, (PLAYER_SRC_Y + PLAYER_HEIGHT * 5), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 5 && Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 5), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 5), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
 		}
 	}
 
@@ -75,14 +109,14 @@ void drawPlayer(Character* Player, int sprite_handle, int shake_power_x, int sha
 		if (Player->direction == Right)
 		{
 			if (Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 0, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
-			if (Player->attack_timer>=10 && Player->attack_timer < 15) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
+			if (Player->attack_timer >= 10 && Player->attack_timer < 15) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
 			if (Player->attack_timer >= 15) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE); }
 		}
 		if (Player->direction == Left)
 		{
 			if (Player->attack_timer < 5) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 0, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
-			if (Player->attack_timer >= 5 && Player->attack_timer < 10) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE,TRUE); }
-			if (Player->attack_timer >= 10) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 5 && Player->attack_timer < 15) { DrawRectGraph(Player->x + shake_power_x, Player->y + shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 1, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
+			if (Player->attack_timer >= 15) { DrawRectGraph(Player->x + shake_power_x, Player->y - shake_power_y, PLAYER_SRC_X + PLAYER_WIDTH * 2, (PLAYER_SRC_Y + PLAYER_HEIGHT * 4), PLAYER_WIDTH, PLAYER_HEIGHT, sprite_handle, TRUE, TRUE); }
 		}
 	}
 
@@ -108,7 +142,7 @@ void drawEffect(Character Player, int sprite_handle, MapData Map)
 {
 	if (Player.jump_effect_flag == true)
 	{
-		DrawRectGraph(Player.jump_effect_posX+Map.draw_position_x, Player.jump_effect_posY, 512 + JUMP_EFFECT_WIDTH*(Player.jump_effect_timer / 5) ,0, JUMP_EFFECT_WIDTH, JUMP_EFFECT_HEIGHT, sprite_handle, TRUE);
+		DrawRectGraph(Player.jump_effect_posX + Map.draw_position_x, Player.jump_effect_posY, 512 + JUMP_EFFECT_WIDTH*(Player.jump_effect_timer / 5), 0, JUMP_EFFECT_WIDTH, JUMP_EFFECT_HEIGHT, sprite_handle, TRUE);
 	}
 }
 
@@ -150,7 +184,7 @@ void exeJump(Character* Player, MapData Map, int gravity, bool checkPressButton)
 	{
 		Player->air_jump_flag = true;
 		Player->jump_effect_flag = true;
-		Player->jump_effect_posX = (Player->x - 64)-Map.draw_position_x;
+		Player->jump_effect_posX = (Player->x - 64) - Map.draw_position_x;
 		Player->jump_effect_posY = Player->y - 128;
 		Player->jump_pow = PLAYER_JUMP_POW_MAX;
 		Player->speed_y = 0;
@@ -193,7 +227,7 @@ void affectGravity(Character* Player, int gravity)
 	}
 }
 
-void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool checkPressAttack, bool checkPressStep, bool checkPressShot, bool now_performance)
+void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool checkPressAttack, bool checkPressStep, bool checkPressShot, bool now_performance, XINPUT_STATE X_Input)
 {
 	//‘Ò‹@ó‘Ô‚©‚çUŒ‚ˆê’i–Ú‚É”h¶
 	if (Player->attack_state == None && Player->on_ground && checkPressAttack)
@@ -202,6 +236,16 @@ void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool che
 		Player->attack_state = GrAttack1;
 		if (Player->direction == Right) { Player->speed_x = 20; }
 		if (Player->direction == Left) { Player->speed_x = -20; }
+	}
+
+	//‘Ò‹@ó‘Ô‚©‚ç‹ó’†UŒ‚‚É”h¶
+	if (Player->attack_state == None && !(Player->on_ground) && checkPressAttack)
+	{
+		Player->attack_timer = 0;
+		Player->attack_state = AirAttack;
+		//if (Player->direction == Right) { Player->speed_x = 5; }
+		//if (Player->direction == Left) { Player->speed_x = -5; }
+		Player->speed_y = -20;
 	}
 
 	//‘Ò‹@ó‘Ô‚©‚ç‰“‹——£UŒ‚‚É”h¶
@@ -237,12 +281,12 @@ void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool che
 		}
 
 		//UŒ‚“ñ’i–Ú‚Ö”h¶
-		if (Player->attack_state == GrAttack1 && Player->attack_timer > 5 && checkPressAttack)
+		if (Player->attack_timer > 5 && checkPressAttack)
 		{
 			Player->attack_state = GrAttack2;
 			Player->attack_timer = 0;
 			if (Player->direction == Right) { Player->speed_x = -20; }
-			if (Player->direction == Left)	{ Player->speed_x = 20; }
+			if (Player->direction == Left) { Player->speed_x = 20; }
 			Player->speed_y = -30;
 		}
 	}
@@ -254,7 +298,55 @@ void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool che
 		if (Player->speed_x < 0) { Player->speed_x += 2; }
 		//Player->x += Player->speed_x;
 		Player->attack_timer++;
-		if (Player->attack_timer > 20)
+		if (Player->attack_timer > 30)
+		{
+			Player->attack_state = None;
+			Player->attack_timer = 0;
+		}
+		if (Player->attack_timer >= 10)
+		{
+			if (CheckHitKey(KEY_INPUT_RIGHT) || (X_Input.ThumbLX > 15000)) { Player->direction = Right; }
+			if (CheckHitKey(KEY_INPUT_LEFT) || (X_Input.ThumbLX < -15000)) { Player->direction = Left; }
+		}
+		//UŒ‚ŽO’i–Ú‚Ö”h¶
+		if (Player->attack_timer > 10 && checkPressAttack)
+		{
+			Player->attack_state = GrAttack3;
+			Player->attack_timer = 0;
+			if (Player->direction == Right) { Player->speed_x = 30; }
+			if (Player->direction == Left) { Player->speed_x = -30; }
+			Player->speed_y = 40;
+		}
+	}
+
+	//////////	UŒ‚ŽO’i–Ú	//////////
+	if (Player->attack_state == GrAttack3)
+	{
+		if (Player->speed_x > 0) { Player->speed_x -= 1; }
+		if (Player->speed_x < 0) { Player->speed_x += 1; }
+		Player->attack_timer++;
+		if (Player->attack_timer > 30)
+		{
+			Player->attack_state = None;
+			Player->attack_timer = 0;
+		}
+	}
+
+	//////////	‹ó’†UŒ‚	//////////
+	if (Player->attack_state == AirAttack)
+	{
+		//if (Player->speed_x > 0) { Player->speed_x -= 2; }
+		//if (Player->speed_x < 0) { Player->speed_x += 2; }
+		Player->attack_timer++;
+		if (Player->attack_timer > 5 && (CheckHitKey(KEY_INPUT_DOWN) || X_Input.ThumbLY < -20000) && checkPressAttack)
+		{
+			Player->attack_state = GrAttack3;
+			Player->attack_timer = 0;
+			if (Player->direction == Right) { Player->speed_x = 30; }
+			if (Player->direction == Left) { Player->speed_x = -30; }
+			Player->speed_y = 40;
+		}
+		if (Player->attack_timer > 20 || Player->on_ground)
 		{
 			Player->attack_state = None;
 			Player->attack_timer = 0;
@@ -275,17 +367,17 @@ void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool che
 					{
 						(PlayerShot + i)->x = Player->x;
 						(PlayerShot + i)->direction = Right;
-						(PlayerShot + i)->speed_x = 30;
+						(PlayerShot + i)->speed = 30;
 					}
 					if (Player->direction == Left)
 					{
 						(PlayerShot + i)->x = Player->x;
 						(PlayerShot + i)->direction = Left;
-						(PlayerShot + i)->speed_x = -30;
+						(PlayerShot + i)->speed = -30;
 					}
-					//if (Player->direction == Left) { (PlayerShot + i)->x = Player->x + 110; }
 					(PlayerShot + i)->y = Player->y;
 					shot_fin = true;
+					StartJoypadVibration(DX_INPUT_PAD1, 1000, 100);
 				}
 			}
 		}
@@ -333,7 +425,7 @@ void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool che
 	}
 }
 
-void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, MapData Map, HitState* Attack)
+void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, int* shake_timer, MapData Map, HitState* Attack)
 {
 	if (Player.attack_state == GrAttack1)
 	{
@@ -341,43 +433,115 @@ void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, Map
 		{
 			if (Player.x + PLAYER_ATTACK1_COLL_RIGHT> Dammy.x + Map.draw_position_x && Player.x + PLAYER_ATTACK1_COLL_LEFT < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
 				Player.y + PLAYER_ATTACK1_COLL_TOP < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_ATTACK1_COLL_BOTTOM >Dammy.y &&
-				!Attack->hit_GrAttack1 && *shake_screen == false)
+				!Attack->hit_GrAttack1)
 			{
+				*shake_timer = 0;
 				*shake_screen = true;
 				Attack->hit_GrAttack1 = true;
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 100);
 			}
 		}
 		if (Player.direction == Left)
 		{
-			if (Player.x + PLAYER_ATTACK1_COLL_RIGHT - (PLAYER_WIDTH / 2) > Dammy.x + Map.draw_position_x && Player.x + PLAYER_ATTACK1_COLL_LEFT - (PLAYER_WIDTH / 2) < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+			if (Player.x + PLAYER_WIDTH - PLAYER_ATTACK1_COLL_LEFT > Dammy.x + Map.draw_position_x && Player.x + PLAYER_WIDTH - PLAYER_ATTACK1_COLL_RIGHT < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
 				Player.y + PLAYER_ATTACK1_COLL_TOP < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_ATTACK1_COLL_BOTTOM >Dammy.y &&
-				!Attack->hit_GrAttack1 && *shake_screen == false)
+				!Attack->hit_GrAttack1)
 			{
+				*shake_timer = 0;
 				*shake_screen = true;
 				Attack->hit_GrAttack1 = true;
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 100);
 			}
+		}
+	}
+
+	if (Player.attack_state == GrAttack2)
+	{
+		if (Player.direction == Right)
+		{
+			if (Player.x + PLAYER_ATTACK2_COLL_RIGHT > Dammy.x + Map.draw_position_x && Player.x + PLAYER_ATTACK2_COLL_LEFT < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+				Player.y + PLAYER_ATTACK2_COLL_TOP < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_ATTACK2_COLL_BOTTOM >Dammy.y &&
+				!Attack->hit_GrAttack2)
+			{
+				*shake_timer = 0;
+				*shake_screen = true;
+				Attack->hit_GrAttack2 = true;
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 150);
+			}
+		}
+		if (Player.direction == Left)
+		{
+			if (Player.x + PLAYER_WIDTH - PLAYER_ATTACK2_COLL_LEFT > Dammy.x + Map.draw_position_x && Player.x + PLAYER_WIDTH - PLAYER_ATTACK2_COLL_RIGHT < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+				Player.y + PLAYER_ATTACK2_COLL_TOP < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_ATTACK2_COLL_BOTTOM >Dammy.y &&
+				!Attack->hit_GrAttack2)
+			{
+				*shake_timer = 0;
+				*shake_screen = true;
+				Attack->hit_GrAttack2 = true;
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 150);
+			}
+		}
+	}
+
+	if (Player.attack_state == GrAttack3)
+	{
+		if (Player.direction == Right)
+		{
+			if (Player.x + PLAYER_ATTACK3_COLL_RIGHT > Dammy.x + Map.draw_position_x && Player.x + PLAYER_ATTACK2_COLL_LEFT < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+				Player.y + PLAYER_ATTACK3_COLL_TOP < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_ATTACK2_COLL_BOTTOM >Dammy.y &&
+				!Attack->hit_GrAttack3)
+			{
+				*shake_timer = 0;
+				*shake_screen = true;
+				Attack->hit_GrAttack3 = true;
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 200);
+			}
+		}
+		if (Player.direction == Left)
+		{
+			if (Player.x + PLAYER_WIDTH - PLAYER_ATTACK3_COLL_LEFT > Dammy.x + Map.draw_position_x && Player.x + PLAYER_WIDTH - PLAYER_ATTACK3_COLL_RIGHT < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+				Player.y + PLAYER_ATTACK3_COLL_TOP < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_ATTACK3_COLL_BOTTOM >Dammy.y &&
+				!Attack->hit_GrAttack3)
+			{
+				*shake_timer = 0;
+				*shake_screen = true;
+				Attack->hit_GrAttack3 = true;
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 200);
+			}
+		}
+	}
+
+	if (Player.attack_state == AirAttack)
+	{
+		if (Player.x + PLAYER_WIDTH > Dammy.x + Map.draw_position_x && Player.x < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+			Player.y < Dammy.y + DAMMY_HEIGHT && Player.y + PLAYER_HEIGHT >Dammy.y &&
+			!Attack->hit_AirAttack)
+		{
+			*shake_timer = 0;
+			*shake_screen = true;
+			Attack->hit_AirAttack = true;
+			StartJoypadVibration(DX_INPUT_PAD1, 1000, 150);
 		}
 	}
 
 	//ƒqƒbƒgƒ`ƒFƒbƒN‚Ì‰Šú‰»
 	if (Player.attack_state != GrAttack1) { Attack->hit_GrAttack1 = false; }
-	if (Player.attack_state != GrAttack2) { Attack->hit_GrAttack2_1 = false, Attack->hit_GrAttack2_2 = false; }
+	if (Player.attack_state != GrAttack2) { Attack->hit_GrAttack2 = false; }
 	if (Player.attack_state != GrAttack3) { Attack->hit_GrAttack3 = false; }
+	if (Player.attack_state != AirAttack) { Attack->hit_AirAttack = false; }
 }
 
-void collPlayerShot(Character Player, ScareCrow Dammy, bool* shake_screen, MapData Map, Bullet PlayerShot[5], HitState* Attack)
+void collPlayerShot(Character Player, ScareCrow Dammy, bool* shake_screen, int* shake_timer, MapData Map, Bullet* PlayerShot)
 {
-	if (Player.attack_state == Shot)
+	for (int i = 0; i < 5; i++)
 	{
-		for (int i = 0; i < 5; i++)
+		if ((PlayerShot + i)->coll_right > Dammy.x + Map.draw_position_x && (PlayerShot + i)->coll_left < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
+			(PlayerShot + i)->coll_top < Dammy.y + DAMMY_HEIGHT && (PlayerShot + i)->coll_bottom >Dammy.y &&
+			(PlayerShot + i)->exist)
 		{
-			if (PlayerShot[i].coll_right > Dammy.x + Map.draw_position_x && PlayerShot[i].coll_left < Dammy.x + DAMMY_WIDTH + Map.draw_position_x &&
-				PlayerShot[i].coll_top < Dammy.y + DAMMY_HEIGHT && PlayerShot[i].coll_bottom >Dammy.y &&
-				PlayerShot[i].exist && *shake_screen == false)
-			{
-				*shake_screen = true;
-				Attack->hit_Shot = true;
-			}
+			*shake_timer = 0;
+			(PlayerShot + i)->exist = false;
+			*shake_screen = true;
 		}
 	}
 }

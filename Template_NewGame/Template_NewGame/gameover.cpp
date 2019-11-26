@@ -11,3 +11,13 @@ void drawBB(int bb_handle, int* bb_transparency)
 
 	if (*bb_transparency != BB_TRANSPARENCY_MAX) { SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255); }
 }
+
+void drawGameOver(int bb_transparency, int* gameover_timer, int gameover_handle, int* gameover_string_y)
+{
+	if (bb_transparency == 255) { *gameover_timer++; }
+
+	if (*gameover_timer > 100)
+	{
+		
+	}
+}

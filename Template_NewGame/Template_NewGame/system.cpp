@@ -7,9 +7,10 @@
 #include "system.h"
 #include "main.h"
 #include "boss.h"
+#include "shot.h"
 
 void drawDebugString(Character Player, int gravity, int jump_button_timer, int attack_button_timer, MapData Map, SceneFlag Scene, int shake_timer, int shake_power, bool shake_screen, int scene, AfterImage AfterPlayer,
-	int gate_y, int gate_speed, Enemy Boss)
+	int gate_y, int gate_speed, Enemy Boss,Bullet Test, Bullet PlayerShot[5], XINPUT_STATE X_Input,int avoid_x, int avoid_y,bool avoid_tutorial, bool avoid_tutorial_fin)
 {
 	int Orange = GetColor(255, 102, 0);
 	//数値系
@@ -28,6 +29,15 @@ void drawDebugString(Character Player, int gravity, int jump_button_timer, int a
 	DrawFormatString(540 * 0, 20 * 12, Orange, "ゲートスピード:%d", gate_speed);
 	DrawFormatString(540 * 0, 20 * 13, Orange, "パフォーマンスタイマー:%d", Scene.performance_timer);
 	DrawFormatString(540 * 0, 20 * 14, Orange, "ボス座標X:%d,Y:%d", Boss.x, Boss.y);
+	DrawFormatString(540 * 0, 20 * 15, Orange, "バレット角度:%d", Test.angle);
+	DrawFormatString(540 * 0, 20 * 16, Orange, "タリスマン座標X:%d,Y:%d", PlayerShot[0].x, PlayerShot[0].y);
+	DrawFormatString(540 * 0, 20 * 17, Orange, "タリスマン座標X:%d,Y:%d", PlayerShot[1].x, PlayerShot[1].y);
+	DrawFormatString(540 * 0, 20 * 18, Orange, "タリスマン座標X:%d,Y:%d", PlayerShot[2].x, PlayerShot[2].y);
+	DrawFormatString(540 * 0, 20 * 19, Orange, "タリスマン座標X:%d,Y:%d", PlayerShot[3].x, PlayerShot[3].y);
+	DrawFormatString(540 * 0, 20 * 20, Orange, "タリスマン座標X:%d,Y:%d", PlayerShot[4].x, PlayerShot[4].y);
+	DrawFormatString(540 * 0, 20 * 21, Orange, "左スティック座標X:%d,Y:%d", X_Input.ThumbLX,X_Input.ThumbLY);
+	DrawFormatString(540 * 0, 20 * 22, Orange, "回避練習フラグ:%d,:%d", avoid_tutorial,avoid_tutorial_fin);
+	DrawFormatString(540 * 0, 20 * 23, Orange, "回避練習座標:%d,:%d", avoid_x,avoid_y);
 
 	//フラグ系
 	DrawFormatString(540 * 1, 20 * 0, Orange, "ジャンプフラグ:%d", Player.jump_flag);
@@ -66,34 +76,35 @@ bool checkPressButton(int* jump_button_timer, bool now_performance, XINPUT_STATE
 	else { return false; }
 }
 
-bool checkPressAttack(int* attack_button_timer, bool now_performance)
+bool checkPressAttack(int* attack_button_timer, bool now_performance, XINPUT_STATE X_Input)
 {
-	if (CheckHitKey(KEY_INPUT_F) && !now_performance) { (*attack_button_timer)++; }
+	if (CheckHitKey(KEY_INPUT_X) || X_Input.Buttons[XINPUT_BUTTON_X] && !now_performance) { (*attack_button_timer)++; }
 	else { (*attack_button_timer) = 0; }
+
 
 	if ((*attack_button_timer) == 1) { return true; }
 	else { return false; }
 }
 
-bool checkPressStep(int* step_button_timer, bool now_performance)
+bool checkPressStep(int* step_button_timer, bool now_performance, XINPUT_STATE X_Input)
 {
-	if (CheckHitKey(KEY_INPUT_LSHIFT) && !now_performance) { (*step_button_timer)++; }
+	if (CheckHitKey(KEY_INPUT_LSHIFT) || X_Input.Buttons[XINPUT_BUTTON_LEFT_SHOULDER] && !now_performance) { (*step_button_timer)++; }
 	else { (*step_button_timer) = 0; }
 
 	if ((*step_button_timer) == 1) { return true; }
 	else { return false; }
 }
 
-bool checkPressShot(int* shot_button_timer, bool now_performance)
+bool checkPressShot(int* shot_button_timer, bool now_performance, XINPUT_STATE X_Input)
 {
-	if (CheckHitKey(KEY_INPUT_Q) && !now_performance) { (*shot_button_timer)++; }
+	if (CheckHitKey(KEY_INPUT_Z) || X_Input.Buttons[XINPUT_BUTTON_RIGHT_SHOULDER] && !now_performance) { (*shot_button_timer)++; }
 	else { (*shot_button_timer) = 0; }
 
 	if ((*shot_button_timer) == 1) { return true; }
 	else { return false; }
 }
 
-void drawCollisionBox(Character Player, ScareCrow Dammy, MapData Map)
+void drawCollisionBox(Character Player, ScareCrow Dammy, MapData Map, Bullet PlayerShot[5])
 {
 	int color = GetColor(255, 0, 153);
 	//プレイヤー
@@ -106,7 +117,38 @@ void drawCollisionBox(Character Player, ScareCrow Dammy, MapData Map)
 		}
 		if (Player.direction == Left)
 		{
-			DrawBox(Player.x + PLAYER_ATTACK1_COLL_LEFT - (PLAYER_WIDTH / 2), Player.y + PLAYER_ATTACK1_COLL_TOP, Player.x + PLAYER_ATTACK1_COLL_RIGHT - (PLAYER_WIDTH / 2), Player.y + PLAYER_ATTACK1_COLL_BOTTOM, color, FALSE);
+			DrawBox(Player.x + PLAYER_WIDTH - PLAYER_ATTACK1_COLL_RIGHT, Player.y + PLAYER_ATTACK1_COLL_TOP, Player.x + PLAYER_WIDTH - PLAYER_ATTACK1_COLL_LEFT , Player.y + PLAYER_ATTACK1_COLL_BOTTOM, color, FALSE);
+		}
+	}
+	if (Player.attack_state == GrAttack2)
+	{
+		if (Player.direction == Right)
+		{
+			DrawBox(Player.x + PLAYER_ATTACK2_COLL_LEFT, Player.y + PLAYER_ATTACK2_COLL_TOP, Player.x + PLAYER_ATTACK2_COLL_RIGHT, Player.y + PLAYER_ATTACK2_COLL_BOTTOM, color, FALSE);
+		}
+		if (Player.direction == Left)
+		{
+			DrawBox(Player.x + PLAYER_WIDTH - PLAYER_ATTACK2_COLL_RIGHT, Player.y + PLAYER_ATTACK2_COLL_TOP, Player.x + PLAYER_WIDTH - PLAYER_ATTACK2_COLL_LEFT, Player.y + PLAYER_ATTACK2_COLL_BOTTOM, color, FALSE);
+		}
+	}
+	if (Player.attack_state == GrAttack3)
+	{
+		if (Player.direction == Right)
+		{
+			DrawBox(Player.x + PLAYER_ATTACK3_COLL_LEFT, Player.y + PLAYER_ATTACK3_COLL_TOP, Player.x + PLAYER_ATTACK3_COLL_RIGHT, Player.y + PLAYER_ATTACK3_COLL_BOTTOM, color, FALSE);
+		}
+		if (Player.direction == Left)
+		{
+			DrawBox(Player.x + PLAYER_WIDTH - PLAYER_ATTACK3_COLL_RIGHT, Player.y + PLAYER_ATTACK3_COLL_TOP, Player.x + PLAYER_WIDTH - PLAYER_ATTACK3_COLL_LEFT, Player.y + PLAYER_ATTACK3_COLL_BOTTOM, color, FALSE);
+		}
+	}
+
+	//プレイヤーの弾
+	for (int i = 0; i < 5; i++)
+	{
+		if (PlayerShot[i].exist == true)
+		{
+			DrawBox(PlayerShot[i].coll_left, PlayerShot[i].coll_top, PlayerShot[i].coll_right, PlayerShot[i].coll_bottom, color, FALSE);
 		}
 	}
 
@@ -121,25 +163,152 @@ void drawBattleStartLine(MapData Map)
 	DrawLine(Map.first_battle_line, 0, Map.first_battle_line, 1080, color);
 }
 
-void shakeScreen(bool* shake_screen, int* shake_power_x, int* shake_power_y, int* shake_timer, Character* Player, MapData* Map, ScareCrow* Dammy)
+void shakeScreen(bool* shake_screen, int* shake_power_x, int* shake_power_y, int* shake_timer, Character* Player, MapData* Map, ScareCrow* Dammy,bool now_performance)
 {
 	if (*shake_screen)
 	{
-		if (Player->direction == Right)
+		*shake_power_x = *shake_power_y = 0;
+		if (*shake_timer % 6 == 0) { *shake_power_x = 5; }
+		if (*shake_timer % 6 == 1) { *shake_power_x = 10; }
+		if (*shake_timer % 6 == 2) { *shake_power_x = 15; }
+		if (*shake_timer % 6 == 3) { *shake_power_y = -5; }
+		if (*shake_timer % 6 == 4) { *shake_power_y = -10; }
+		if (*shake_timer % 6 == 5) { *shake_power_y = -15; }
+		if (*shake_timer > 6) { *shake_screen = false; }
+
+		if (Player->attack_state == GrAttack1)
 		{
-			//if (*shake_timer < 5) { *shake_power_x += 5; }
-			//if (*shake_timer >= 5) { *shake_power_x = 0; *shake_power_y -= 5;}
-			*shake_power_x = *shake_power_y = 0;
-			if (*shake_timer % 5 < 3) { *shake_power_x = 10; }
-			if (*shake_timer % 5 >= 3) { *shake_power_y = 10; }
-			if (*shake_timer > 6) { *shake_screen = false; }
+			if (Player->direction == Right)
+			{
+				//if (*shake_timer < 5) { *shake_power_x += 5; }
+				//if (*shake_timer >= 5) { *shake_power_x = 0; *shake_power_y -= 5;}
+				*shake_power_x = *shake_power_y = 0;
+				//if (*shake_timer % 5 < 3) { *shake_power_x = 10; }
+				//if (*shake_timer % 5 >= 3) { *shake_power_y = 10; }
+
+				if (*shake_timer % 6 == 0) { *shake_power_x = 2; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = 4; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = 6; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -2; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -4; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -6; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+			if (Player->direction == Left)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = -2; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = -4; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = -6; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -2; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -4; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -6; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
 		}
-		if (Player->direction == Left)
+
+		if (Player->attack_state == GrAttack2)
 		{
-			*shake_power_x = *shake_power_y = 0;
-			if (*shake_timer % 5 < 3) { *shake_power_x = 20; }
-			if (*shake_timer % 5 >= 3) { *shake_power_y = 20; }
-			if (*shake_timer > 6) { *shake_screen = false; }
+			if (Player->direction == Right)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = 5; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = 10; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = 15; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -5; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -15; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+			if (Player->direction == Left)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = -5; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = -10; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = -15; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -5; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -15; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+		}
+
+		if (Player->attack_state == GrAttack3)
+		{
+			if (Player->direction == Right)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = 10; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = 20; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = 30; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -20; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -30; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+			if (Player->direction == Left)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = -10; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = -20; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = -30; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -20; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -30; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+		}
+
+		if (Player->attack_state == AirAttack)
+		{
+			if (Player->direction == Right)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = 5; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = 10; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = 15; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -5; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -15; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+			if (Player->direction == Left)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = -5; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = -10; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = -15; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -5; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -15; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+		}
+
+		if(now_performance)
+		{
+			if (Player->direction == Right)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = 10; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = 20; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = 30; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -20; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -30; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
+			if (Player->direction == Left)
+			{
+				*shake_power_x = *shake_power_y = 0;
+				if (*shake_timer % 6 == 0) { *shake_power_x = -10; }
+				if (*shake_timer % 6 == 1) { *shake_power_x = -20; }
+				if (*shake_timer % 6 == 2) { *shake_power_x = -30; }
+				if (*shake_timer % 6 == 3) { *shake_power_y = -10; }
+				if (*shake_timer % 6 == 4) { *shake_power_y = -20; }
+				if (*shake_timer % 6 == 5) { *shake_power_y = -30; }
+				if (*shake_timer > 6) { *shake_screen = false; }
+			}
 		}
 		(*shake_timer)++;
 	}

@@ -19,12 +19,20 @@
 #define PLAYER_ATTACK1_COLL_RIGHT	(130)
 #define PLAYER_ATTACK1_COLL_TOP		(60)
 #define PLAYER_ATTACK1_COLL_BOTTOM	(90)
+#define PLAYER_ATTACK2_COLL_LEFT	(15)
+#define PLAYER_ATTACK2_COLL_RIGHT	(130)
+#define PLAYER_ATTACK2_COLL_TOP		(0)
+#define PLAYER_ATTACK2_COLL_BOTTOM	(100)
+#define PLAYER_ATTACK3_COLL_LEFT	(15)
+#define PLAYER_ATTACK3_COLL_RIGHT	(130)
+#define PLAYER_ATTACK3_COLL_TOP		(0)
+#define PLAYER_ATTACK3_COLL_BOTTOM	(100)
 #define JUMP_EFFECT_WIDTH			(256)
 #define JUMP_EFFECT_HEIGHT			(256)
 
 
 //ç\ë¢ëÃíËã`
-enum ATTACK_STATE {None, BackStep, GrAttack1,GrAttack2,GrAttack3,Shot};
+enum ATTACK_STATE {None, BackStep, GrAttack1,GrAttack2,GrAttack3,AirAttack,Shot};
 enum PLAYER_DIRECTION { Left, Right };
 
 struct Character
@@ -58,11 +66,10 @@ struct Character
 struct HitState
 {
 	bool hit_GrAttack1;
-	bool hit_GrAttack2_1;
-	bool hit_GrAttack2_2;
+	bool hit_GrAttack2;
 	bool hit_GrAttack3;
 
-	bool hit_Air_Attack;
+	bool hit_AirAttack;
 
 	bool hit_Shot;
 };
@@ -81,8 +88,9 @@ void drawPlayer(Character* Player, int sprite_handle, int shake_power_x, int sha
 void movePlayer(Character* Player, bool now_performance, XINPUT_STATE X_input);
 void exeJump(Character* Player, MapData Map, int gravity,bool checkPressButton);
 void affectGravity(Character* Player, int gravity);
-void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool checkPressAttack, bool checkPressStep, bool checkPressShot, bool now_performance);
-void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, MapData Map,HitState* Attack);
+void attackPlayer(Character* Player, Bullet* PlayerShot, bool shot_fin, bool checkPressAttack, bool checkPressStep, bool checkPressShot, bool now_performance, XINPUT_STATE X_Input);
+void collPlayerAttack(Character Player, ScareCrow Dammy, bool* shake_screen, int* shake_timer, MapData Map,HitState* Attack);
+void collPlayerShot(Character Player, ScareCrow Dammy, bool* shake_screen, int* shake_timer, MapData Map, Bullet* PlayerShot);
 void savePlayerPos(Character Player, AfterImage* AfterPlayer);
 void drawAfterImages(Character Player, AfterImage AfterPlayer, int shake_power_x, int shake_power_y, int sprite_handle);
 void drawEffect(Character Player, int sprite_handle,MapData Map);

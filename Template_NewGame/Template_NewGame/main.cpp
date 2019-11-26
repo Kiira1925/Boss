@@ -5,6 +5,7 @@
 #include "boss.h"
 #include "shot.h"
 #include "bg.h"
+#include "gimmick.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,10 @@ int dammy_handle;
 int bb_handle;
 int bullet_handle;
 int bg_handle;
-int bg2_handle;
+int testB_handle;
+int shootrange_handle;
+int target_handle;
+int gameover_handle;
 
 //•Ï”éŒ¾
 int gravity;
@@ -42,17 +46,26 @@ bool now_performance;
 int gate_y;
 int gate_speed;
 int bb_transparency;
+bool avoid_tutorial;
+bool avoid_tutorial_fin;
+int avoid_x;
+int avoid_y;
+int gameover_timer;
+int gameover_string_y[8];
 
 //\‘¢‘ÌÀ‘ÌéŒ¾
 MapData Map;
 Character Player;
 Bullet PlayerShot[5];
 Enemy Boss;
+Bullet FoxFire[20];
+Bullet Test;
 HitState Attack;
 AfterImage AfterPlayer;
 SceneFlag Scene;
 ScareCrow Dammy;
 BackGround BG;
+Gimmick Shooting[2];
 XINPUT_STATE X_Input;
 
 
@@ -78,10 +91,13 @@ void AfterInit(void)
 	bb_handle = LoadGraph("Data/Sprite/BlackBack.png");
 	bullet_handle = LoadGraph("Data/Sprite/talisman.png");
 	bg_handle = LoadGraph("Data/Sprite/back.png");
-	bg2_handle = LoadGraph("Data/Sprite/back_2.png");
+	testB_handle = LoadGraph("Data/Sprite/testBullet.png");
+	shootrange_handle = LoadGraph("Data/Sprite/shoot_range.png");
+	target_handle = LoadGraph("Data/sprite/target.png");
+	gameover_handle - LoadGraph("Data/Sprite/game_over.png");
 
 	//•Ï”‚Ì‰Šú‰»
-	for (int i = 0; i<360; i++)
+	for (int i = 0; i < 360; i++)
 	{
 		fsin[i] = (float)sin(i*3.1415926535 / 180);
 		fcos[i] = (float)cos(i*3.1415926535 / 180);
@@ -95,19 +111,34 @@ void AfterInit(void)
 	shot_fin = false;
 	scene = Tutorial;
 	now_performance = false;
-	gate_y = -420;
+	gate_y = -1080;
+	avoid_tutorial = false;
+	avoid_tutorial_fin = false;
+	avoid_x = -500;
+	avoid_y = -GATE_HEIGHT;
+	gameover_timer = 0;
+	for (int i = 0; i < 8; i++)
+	{
+		gameover_string_y[i] = 1080;
+	}
 
 	//\‘¢‘Ì‚Ì‰Šú‰»
-	Map = { 0, 0, ABS_FIRST_BATTLE_LINE };
+	Map = { 0, 0, ABS_FIRST_BATTLE_LINE,ABS_SECOND_BATTLE_LINE,ABS_THIRD_BATTLE_LINE };
 	Player = { 300, 892, Right, 0, 0, 10, 0, true, false, false, 0,false, 0,0,0, true, None,true, 0, 0, 0, 0, 0 };
 	for (int i = 0; i < 5; i++)
 	{
-		PlayerShot[i] = { -500,-500,0,0,0,0,0,0,0,0,Right,0,false,0,0 };
+		PlayerShot[i] = { -500,-500,0,0,0,0,0,0,0,Right,0,false,0,0 };
 	}
+	for (int i = 0; i < 20; i++)
+	{
+		FoxFire[i] = { -500,-500,0,0,0,0,0,0,0,0,0,false,0,0 };
+	}
+	Test = { 500,500,500,500,0,0,0,0,0,0,0,false,0,0 };
 	BG = { 0,0,1920,0,0,0,0,0,0 };
 	AfterPlayer = { 0,0 };
 	Boss = { 3600, 708, 0,0, 0, 10, 0, true, false, false, 0, true, None, 0, 0, 0 };
 	Dammy = { 500,912,20000 };
+	Shooting[0] = { 5040,900,5700,930,5640,-180,false };
 	Scene = { false, false, false, false, false, false, 0 };
 
 	SetFontSize(28);
@@ -143,24 +174,30 @@ void UpdateGame(int GameTime)
 	}
 	movePlayer(&Player, now_performance, X_Input);
 	moveBoss(Player, &Boss);
-	calTalisman(&PlayerShot[0]);
-	setPlayerCollWithChip(Map, &Player);
+	setPlayerCollWithChip(Map, &Player,X_Input);
+	collGate(&Player, scene,Shooting);
 	setBossCollWithChip(Map, &Boss);
 	setTalismanCollWithChip(Map, &PlayerShot[0]);
+	collShootRange(&Player, &Shooting[0], &PlayerShot[0],Map);
 	affectGravity(&Player, gravity);
 	affectGravity(&Boss, gravity);
 	exeJump(&Player, Map, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
 	exeJump(&Boss, gravity, checkPressButton(&jump_button_timer, now_performance, X_Input));
-	attackPlayer(&Player, &PlayerShot[0], shot_fin, checkPressAttack(&attack_button_timer, now_performance), checkPressStep(&step_button_timer, now_performance), checkPressShot(&shot_button_timer, now_performance), now_performance);
-	collPlayerAttack(Player, Dammy, &shake_screen, Map, &Attack);
+	attackPlayer(&Player, &PlayerShot[0], shot_fin, checkPressAttack(&attack_button_timer, now_performance, X_Input), checkPressStep(&step_button_timer, now_performance, X_Input),
+		checkPressShot(&shot_button_timer, now_performance, X_Input), now_performance,X_Input);
+	calTalisman(&PlayerShot[0]);
+	collPlayerAttack(Player, Dammy, &shake_screen, &shake_timer, Map, &Attack);
+	collPlayerShot(Player, Dammy, &shake_screen, &shake_timer, Map,&PlayerShot[0]);
+	calTest(&Test, fsin, fcos);
 	//moveMapChip(&Map);
-	scrollMapChip(&Map, &Player, &Boss,&BG, scene);
+	scrollMapChip(&Map, &Player, &Boss, &BG, &Shooting[0], scene, avoid_tutorial,&avoid_x);
+	practiceAvoid(&avoid_tutorial, &avoid_tutorial_fin, &avoid_x, &avoid_y, &shake_screen, gate_handle, Player, Map);
 	scrollBG(&BG);
-	scrollTree(&BG, Map);
+	scrollTreeAndTemple(&BG, Map);
 	changeStateFlag(&Scene, Map, Player, &scene, &now_performance);
 	StateTransition(&scene, Scene);
 	performanceScroll(&Map, &Player, &Boss, &Scene, scene);
-	shakeScreen(&shake_screen, &shake_power_x, &shake_power_y, &shake_timer, &Player, &Map, &Dammy);
+	shakeScreen(&shake_screen, &shake_power_x, &shake_power_y, &shake_timer, &Player, &Map, &Dammy,now_performance);
 	savePlayerPos(Player, &AfterPlayer);
 	dropGate(&gate_y, Scene, gravity, &gate_speed, &shake_screen);
 }
@@ -168,18 +205,21 @@ void UpdateGame(int GameTime)
 // ƒQ[ƒ€•`‰æˆ—
 void GameDraw(int GameTime)
 {
-	DrawGraph(0 + shake_power_x, 0 + shake_power_y, game_handle, true);
-	drawBG(bg_handle,bg2_handle,Map,BG);
+	drawBG(bg_handle, Map, BG);
 	drawAfterImages(Player, AfterPlayer, shake_power_x, shake_power_y, sprite_handle);
+	drawGate(gate_handle, gate_y, shake_power_x, shake_power_y);
 	drawMapChip(Map, sprite_handle, shake_power_x, shake_power_y);
 	drawPlayer(&Player, sprite_handle, shake_power_x, shake_power_y);
-	//drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss);
-	drawCollisionBox(Player, Dammy, Map);
+	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss,Test,PlayerShot,
+		X_Input,avoid_x, avoid_y, avoid_tutorial,avoid_tutorial_fin);
+	drawCollisionBox(Player, Dammy, Map,PlayerShot);
+	drawAvoid(gate_handle, avoid_x, avoid_y);
 	drawBattleStartLine(Map);
+	drawShootRange(shootrange_handle, target_handle, gate_handle, Shooting);
 	drawTalisman(PlayerShot, bullet_handle);
+	drawTest(&Test, testB_handle);
 	drawScareCrow(Dammy, Map, dammy_handle, shake_power_x, shake_power_y);
 	drawEffect(Player, sprite_handle, Map);
-	drawGate(gate_handle, gate_y, shake_power_x, shake_power_y);
 	drawBoss(&Boss, boss_handle, shake_power_x, shake_power_y);
 }
 
@@ -208,7 +248,8 @@ void GameOverDraw(int GameTime)
 	drawAfterImages(Player, AfterPlayer, shake_power_x, shake_power_y, sprite_handle);
 	drawMapChip(Map, sprite_handle, shake_power_x, shake_power_y);
 	drawPlayer(&Player, sprite_handle, shake_power_x, shake_power_y);
-	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss);
+	drawDebugString(Player, gravity, jump_button_timer, attack_button_timer, Map, Scene, shake_timer, shake_power_x, shake_screen, scene, AfterPlayer, gate_y, gate_speed, Boss,Test,PlayerShot,
+		X_Input, avoid_x,avoid_y, avoid_tutorial, avoid_tutorial_fin);
 	drawBattleStartLine(Map);
 	drawScareCrow(Dammy, Map, dammy_handle, shake_power_x, shake_power_y);
 	drawEffect(Player, sprite_handle, Map);

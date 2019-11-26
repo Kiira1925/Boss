@@ -134,6 +134,7 @@
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="boss.cpp" />
     <ClCompile Include="gameover.cpp" />
+    <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="scarecrow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="bg.h" />
     <ClInclude Include="boss.h" />
     <ClInclude Include="gameover.h" />
+    <ClInclude Include="gimmick.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />

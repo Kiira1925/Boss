@@ -19,6 +19,6 @@ struct BackGround
 
 //プロトタイプ宣言
 struct MapData;
-void drawBG(int bg_handle, int bg2_handle, MapData Map, BackGround BG);
+void drawBG(int bg_handle, MapData Map, BackGround BG);
 void scrollBG(BackGround* BG);
-void scrollTree(BackGround* BG, MapData Map);
+void scrollTreeAndTemple(BackGround* BG, MapData Map);

@@ -25,3 +25,6 @@ void changeStateFlag(SceneFlag* Scene, MapData Map, Character Player, int* scene
 void performanceScroll(MapData* Map, Character* Player,Enemy* Boss, SceneFlag* Scene, int scene);
 void drawGate(int gate_handle, int gate_y, int shake_power_x, int shake_power_y);
 void dropGate(int* gate_y, SceneFlag Scene, int gravity, int* gate_speed, bool* shake_screen);
+void collGate(Character* Player, int scene, Gimmick Shooting[2]);
+void practiceAvoid(bool* avoid_tutorial, bool* avoid_tutorial_fin, int* avoid_x, int* avoid_y, bool* shake_screen, int gate_handle, Character Player, MapData Map);
+void drawAvoid(int gate_handle, int avoid_x, int avoid_y);
